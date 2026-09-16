@@ -8,7 +8,6 @@ export default function DonorProfilePage() {
   return (
     <main className="min-h-screen bg-(--color-surface-page)">
       <div className="mx-auto flex min-h-screen w-full max-w-(--container-sm) flex-col px-(--page-padding-mobile) py-(--space-6) sm:px-(--page-padding-tablet) lg:px-(--page-padding-desktop)">
-        {/* Header */}
         <header className="flex items-center gap-(--space-4)">
           <Link
             href="/verify"
@@ -50,9 +49,7 @@ export default function DonorProfilePage() {
                 className="text-sm font-semibold text-(--color-brand-primary)"
               >
                 Full name
-                <span className="ml-(--space-1) text-(--color-blood)">
-                  *
-                </span>
+                <span className="ml-(--space-1) text-(--color-blood)">*</span>
               </label>
 
               <Input
@@ -81,7 +78,7 @@ export default function DonorProfilePage() {
                   <button
                     key={genotype}
                     type="button"
-                    className="flex h-(--control-height-lg) items-center justify-center rounded-(--radius-lg) border border-(--color-border-default) bg-(--color-surface-card) text-sm font-semibold text-(--color-text-primary) transition-colors hover:border-(--color-brand-primary) hover:bg-(--color-brand-primary-soft)"
+                    className="flex h-(--control-height-lg) items-center justify-center rounded-lg border border-(--color-border-default) bg-(--color-surface-card) text-sm font-semibold text-(--color-text-primary) transition-colors hover:border-(--color-brand-primary) hover:bg-(--color-brand-primary-soft)"
                   >
                     {genotype}
                   </button>
@@ -94,8 +91,8 @@ export default function DonorProfilePage() {
               </p>
             </div>
 
-            {/* Eligibility information */}
-            <div className="rounded-(--radius-lg) border border-(--color-border-default) bg-(--color-surface-subtle) p-(--space-4)">
+            {/* Eligibility info */}
+            <div className="rounded-lg border border-(--color-border-default) bg-(--color-surface-subtle) p-(--space-4)">
               <div className="flex items-start gap-(--space-3)">
                 <ShieldCheck className="mt-0.5 size-4 shrink-0 text-(--color-brand-primary)" />
 
@@ -112,7 +109,7 @@ export default function DonorProfilePage() {
         <footer className="pt-(--space-4)">
           <Button
             type="button"
-            className="h-(--control-height-lg) w-full rounded-(--radius-lg) bg-(--color-brand-primary) text-(--color-text-inverse) hover:bg-(--color-brand-primary-hover)"
+            className="h-(--control-height-lg) w-full rounded-lg bg-(--color-brand-primary) text-(--color-text-inverse) hover:bg-(--color-brand-primary-hover)"
           >
             Continue
           </Button>
