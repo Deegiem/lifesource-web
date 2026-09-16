@@ -8,6 +8,17 @@ export const AUTH_ROUTES = {
   DONOR_WELCOME: "/donor-welcome",
   NEED_BLOOD_INFO: "/need-blood-info",
   DONOR_PROFILE: "/donor-profile",
+  SUPER_ADMIN_LOGIN: "/super-admin/login",
+  SUPER_ADMIN_VERIFICATION: "/super-admin/verification",
+  SUPER_ADMIN_SUCCESS: "/super-admin/success",
+  SUSPENDED_ACCOUNT: "/suspended-account",
+  BANNED_ACCOUNT: "/banned-account",
+  INVALID_INVITATION: "/invalid-invitation",
+  EXPIRED_INVITATION: "/expired-invitation",
+  USED_INVITATION: "/used-invitation",
+  SESSION_EXPIRED: "/session-expired",
+  NETWORK_ERROR: "/network-error",
+  AUTH_ERROR: "/auth-error",
 } as const;
 
 export const AUTH_COPY = {
