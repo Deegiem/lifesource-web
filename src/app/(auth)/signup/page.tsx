@@ -19,17 +19,18 @@ export default function SignupPage() {
 
   return (
     <main className="min-h-screen bg-(--color-surface-card)">
-      <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-5 py-6 sm:px-8 sm:py-8">
+      <div className="mx-auto flex min-h-screen w-full flex-col px-5 py-6 sm:px-8 sm:py-8">
         <button type="button" onClick={() => router.push(AUTH_ROUTES.DONOR_WELCOME)} aria-label="Go back"
           className="flex size-10 items-center justify-center rounded-xl text-(--color-text-secondary) hover:bg-(--color-surface-subtle)">
-          <ArrowLeft size={20}/>
+          <ArrowLeft size={20} />
         </button>
 
-        <div className="flex-1 pt-6 sm:pt-8">
-          <h1 className="text-2xl font-extrabold text-(--color-text-primary) sm:text-3xl">Create your account</h1>
-          <p className="mt-1 text-base text-(--color-text-secondary)">Tell us a bit about yourself to get started.</p>
+        {/* Form container — centered, capped width even on desktop */}
+        <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col pt-6 sm:pt-8">
+          <h1 className="text-2xl font-extrabold text-(--color-text-primary) sm:text-3xl md:text-4xl">Create your account</h1>
+          <p className="mt-1 text-base text-(--color-text-secondary) md:text-lg">Tell us a bit about yourself to get started.</p>
 
-          <form className="mt-7 space-y-4" onSubmit={(e) => { e.preventDefault(); if (valid) router.push(AUTH_ROUTES.VERIFY); }}>
+          <form className="mt-7 space-y-4 md:mt-8 md:space-y-5" onSubmit={(e) => { e.preventDefault(); if (valid) router.push(AUTH_ROUTES.VERIFY); }}>
             {[
               ["fullName", "Full name", "text", "Adaeze Okonkwo"],
               ["email", "Email address", "email", "adaeze@example.com"],
@@ -68,15 +69,15 @@ export default function SignupPage() {
             </label>
 
             <button type="submit" disabled={!valid}
-              className="h-(--control-height-lg) w-full rounded-(--radius-2xl) bg-(--color-brand-primary) text-sm font-semibold text-(--color-text-inverse) hover:bg-(--color-brand-primary-hover) disabled:cursor-not-allowed disabled:opacity-50">
+              className="h-(--control-height-lg) w-full rounded-(--radius-2xl) bg-(--color-brand-primary) text-sm font-semibold text-(--color-text-inverse) hover:bg-(--color-brand-primary-hover) disabled:cursor-not-allowed disabled:opacity-50 md:text-base">
               Create account
             </button>
           </form>
-        </div>
 
-        <footer className="pt-6 text-center">
-          <p className="text-xs text-(--color-text-muted)">Your information is encrypted and kept private.</p>
-        </footer>
+          <footer className="pt-6 text-center md:pt-8">
+            <p className="text-xs text-(--color-text-muted) md:text-sm">Your information is encrypted and kept private.</p>
+          </footer>
+        </div>
       </div>
     </main>
   );
@@ -92,6 +93,6 @@ function PasswordField({ id, label, value, show, toggle, onChange, placeholder =
   return <div className="space-y-2"><label htmlFor={id} className="text-sm font-semibold text-(--color-text-primary)">{label}</label>
     <div className="relative"><input id={id} type={show ? "text" : "password"} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
       className="h-(--control-height-lg) w-full rounded-(--radius-lg) border border-(--color-border-default) px-4 pr-12 text-sm text-(--color-text-primary) outline-none placeholder:text-(--color-text-muted) focus:border-(--color-brand-primary) focus:ring-2 focus:ring-(--color-brand-primary-soft)" required />
-      <button type="button" onClick={toggle} aria-label="Toggle password visibility" className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-(--color-text-muted)">{show ? <EyeOff size={19}/> : <Eye size={19}/>}</button>
+      <button type="button" onClick={toggle} aria-label="Toggle password visibility" className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-(--color-text-muted)">{show ? <EyeOff size={19} /> : <Eye size={19} />}</button>
     </div></div>;
 }
