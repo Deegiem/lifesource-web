@@ -1,0 +1,35 @@
+.page-shell {
+  width: 100%;
+  min-height: 100vh;
+  padding-inline: var(--page-padding-mobile);
+}
+
+.page-container {
+  width: 100%;
+  max-width: var(--container-xl);
+  margin-inline: auto;
+}
+
+.content-container {
+  width: 100%;
+  max-width: var(--container-md);
+  margin-inline: auto;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 32rem;
+  margin-inline: auto;
+}
+
+@media (min-width: 640px) {
+  .page-shell {
+    padding-inline: var(--page-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-shell {
+    padding-inline: var(--page-padding-desktop);
+  }
+}

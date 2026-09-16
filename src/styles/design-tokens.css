@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
+:root {
+  /* ─────────────────────────────────────────
+     Brand colours
+  ───────────────────────────────────────── */
+
+  --color-brand-primary: #1b3a5c;
+  --color-brand-primary-hover: #142e4a;
+  --color-brand-primary-soft: #ebf2fa;
+
+  --color-brand-secondary: #8b5e3c;
+  --color-brand-secondary-hover: #70482d;
+  --color-brand-secondary-soft: #f7eee8;
+
+  --color-blood: #c62828;
+  --color-blood-hover: #a61f1f;
+  --color-blood-soft: #fef2f2;
+
+  /* ─────────────────────────────────────────
+     Text colours
+  ───────────────────────────────────────── */
+
+  --color-text-primary: #0d1b2a;
+  --color-text-secondary: #4b617a;
+  --color-text-muted: #8fa3bd;
+  --color-text-inverse: #ffffff;
+
+  /* ─────────────────────────────────────────
+     Surfaces
+  ───────────────────────────────────────── */
+
+  --color-surface-page: #f7f9fc;
+  --color-surface-card: #ffffff;
+  --color-surface-subtle: #f4f7fb;
+  --color-surface-brand: #ebf2fa;
+  --color-surface-secondary: #f7eee8;
+
+  /* ─────────────────────────────────────────
+     Borders
+  ───────────────────────────────────────── */
+
+  --color-border-default: #dce5ef;
+  --color-border-subtle: #edf2f7;
+  --color-border-strong: #b9c8d8;
+
+  /* ─────────────────────────────────────────
+     Feedback colours
+  ───────────────────────────────────────── */
+
+  --color-success: #16a34a;
+  --color-success-soft: #f0fdf4;
+
+  --color-warning: #d97706;
+  --color-warning-soft: #fffbeb;
+
+  --color-danger: #dc2626;
+  --color-danger-soft: #fef2f2;
+
+  --color-info: #2563eb;
+  --color-info-soft: #eff6ff;
+
+  /* ─────────────────────────────────────────
+     Typography
+  ───────────────────────────────────────── */
+
+  --font-sans:
+    'Plus Jakarta Sans',
+    'Inter',
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+
+  --font-body:
+    'Inter',
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+
+  --font-heading:
+    'Plus Jakarta Sans',
+    'Inter',
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7;
+
+  /* ─────────────────────────────────────────
+     Spacing
+  ───────────────────────────────────────── */
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* ─────────────────────────────────────────
+     Border radius
+  ───────────────────────────────────────── */
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-full: 9999px;
+
+  /* ─────────────────────────────────────────
+     Shadows
+  ───────────────────────────────────────── */
+
+  --shadow-sm: 0 1px 2px rgb(13 27 42 / 0.05);
+  --shadow-md: 0 4px 12px rgb(13 27 42 / 0.08);
+  --shadow-lg: 0 12px 32px rgb(13 27 42 / 0.12);
+
+  /* ─────────────────────────────────────────
+     Responsive layout
+  ───────────────────────────────────────── */
+
+  --container-sm: 40rem;
+  --container-md: 48rem;
+  --container-lg: 64rem;
+  --container-xl: 80rem;
+
+  --page-padding-mobile: 1rem;
+  --page-padding-tablet: 1.5rem;
+  --page-padding-desktop: 2rem;
+
+  /* ─────────────────────────────────────────
+     Controls
+  ───────────────────────────────────────── */
+
+  --control-height-sm: 2.25rem;
+  --control-height-md: 2.75rem;
+  --control-height-lg: 3.65rem;
+
+  /* ─────────────────────────────────────────
+     Motion
+  ───────────────────────────────────────── */
+
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ─────────────────────────────────────────
+     Layering
+  ───────────────────────────────────────── */
+
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+}
