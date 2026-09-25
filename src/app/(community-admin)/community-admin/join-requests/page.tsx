@@ -3,68 +3,26 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Shell } from "@/components/community-admin/shell";
-import {
-  Card,
-  FilterRow,
-  SearchInput,
-  Sel,
-  TH,
-  TD,
-  SBadge,
-  Btn,
-  Pagination,
-  COMMUNITY,
-  Modal,
-  TableRow,
-} from "@/components/community-admin/ui";
+import { Card } from "@/components/community-admin/ui/ca-card";
+import { FilterRow } from "@/components/community-admin/ui/ca-filter-row";
+import { SearchInput } from "@/components/community-admin/ui/ca-search-input";
+import { Sel } from "@/components/community-admin/ui/ca-select";
+import { TH, TD, TableRow } from "@/components/community-admin/ui/ca-table";
+import { SBadge } from "@/components/community-admin/ui/ca-badge";
+import { Btn } from "@/components/community-admin/ui/ca-button";
+import { Pagination } from "@/components/community-admin/ui/ca-pagination";
+import { useCAJoinRequestsStore } from "@/stores/community-admin-join-requests.store";
+import { COMMUNITY } from "@/components/community-admin/ui/ca-constants";
+import { Modal } from "@/components/community-admin/ui/ca-modal";
 
 export default function JoinRequestsPage() {
   const router = useRouter();
 
-  const [rows, setRows] = React.useState([
-    {
-      name: "Danladi Usman",
-      contact: "+234 803 001 0001",
-      date: "Dec 12, 2024",
-      method: "Invite link",
-      status: "Pending",
-    },
-    {
-      name: "Ngozi Okonkwo",
-      contact: "+234 806 001 0002",
-      date: "Dec 11, 2024",
-      method: "Phone invite",
-      status: "Pending",
-    },
-    {
-      name: "Musa Garba",
-      contact: "+234 812 001 0003",
-      date: "Dec 10, 2024",
-      method: "Invite link",
-      status: "Pending",
-    },
-    {
-      name: "Fatima Abdullahi",
-      contact: "+234 801 001 0004",
-      date: "Dec 9, 2024",
-      method: "Phone invite",
-      status: "Pending",
-    },
-    {
-      name: "Ibrahim Sule",
-      contact: "+234 809 001 0005",
-      date: "Dec 5, 2024",
-      method: "Manual add",
-      status: "Approved",
-    },
-    {
-      name: "Aisha Bello",
-      contact: "+234 813 001 0006",
-      date: "Dec 4, 2024",
-      method: "Invite link",
-      status: "Rejected",
-    },
-  ]);
+  const { items: rows,loadItems, updateItemStatus } = useCAJoinRequestsStore();
+
+  React.useEffect(() => {
+    loadItems();
+  }, [loadItems]);
 
   const [modal, setModal] = React.useState<{
     type: "approve" | "reject";
@@ -73,13 +31,7 @@ export default function JoinRequestsPage() {
 
   const confirmAction = () => {
     if (!modal) return;
-    setRows((prev) =>
-      prev.map((r) =>
-        r.name === modal.name
-          ? { ...r, status: modal.type === "approve" ? "Approved" : "Rejected" }
-          : r,
-      ),
-    );
+    updateItemStatus(modal.name, modal.type === "approve" ? "Approved" : "Rejected");
     setModal(null);
   };
 

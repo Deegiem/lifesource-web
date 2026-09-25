@@ -3,7 +3,10 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Shell } from '@/components/community-admin/shell';
-import { Card, SectionLabel, Btn, COMMUNITY } from '@/components/community-admin/ui';
+import { Card } from "@/components/community-admin/ui/ca-card";
+import { SectionLabel } from "@/components/community-admin/ui/ca-section-label";
+import { Btn } from "@/components/community-admin/ui/ca-button";
+import { COMMUNITY } from "@/components/community-admin/ui/ca-constants";
 
 export default function InviteMemberPage() {
   const router = useRouter();

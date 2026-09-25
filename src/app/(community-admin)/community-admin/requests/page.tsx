@@ -3,93 +3,25 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Shell } from "@/components/community-admin/shell";
-import {
-  Card,
-  FilterRow,
-  SearchInput,
-  Sel,
-  TH,
-  TD,
-  SBadge,
-  Btn,
-  Pagination,
-  COMMUNITY,
-  HOSPITALS,
-  BLOOD_TYPES,
-  TableRow,
-} from "@/components/community-admin/ui";
+import { Card } from "@/components/community-admin/ui/ca-card";
+import { FilterRow } from "@/components/community-admin/ui/ca-filter-row";
+import { SearchInput } from "@/components/community-admin/ui/ca-search-input";
+import { Sel } from "@/components/community-admin/ui/ca-select";
+import { TH, TD, TableRow } from "@/components/community-admin/ui/ca-table";
+import { SBadge } from "@/components/community-admin/ui/ca-badge";
+import { Btn } from "@/components/community-admin/ui/ca-button";
+import { Pagination } from "@/components/community-admin/ui/ca-pagination";
+import { useCARequestsStore } from "@/stores/community-admin-requests.store";
+import { COMMUNITY, HOSPITALS, BLOOD_TYPES } from "@/components/community-admin/ui/ca-constants";
 
 export default function CommunityRequestsPage() {
   const router = useRouter();
 
-  const rows = [
-    {
-      id: "REQ-0041",
-      requester: "Amaka Okafor",
-      blood: "O+",
-      needed: 4,
-      conf: 3,
-      hospital: "Lagos Island Gen.",
-      urgency: "High",
-      status: "Open",
-      date: "Dec 12",
-    },
-    {
-      id: "REQ-0039",
-      requester: "Bode Lawal",
-      blood: "A+",
-      needed: 2,
-      conf: 1,
-      hospital: "LUTH",
-      urgency: "—",
-      status: "Open",
-      date: "Dec 11",
-    },
-    {
-      id: "REQ-0037",
-      requester: "Chioma Eze",
-      blood: "B−",
-      needed: 3,
-      conf: 3,
-      hospital: "Garki Hospital",
-      urgency: "Medium",
-      status: "Fulfilled",
-      date: "Dec 9",
-    },
-    {
-      id: "REQ-0035",
-      requester: "Ngozi Okonkwo",
-      blood: "O−",
-      needed: 2,
-      conf: 1,
-      hospital: "LUTH",
-      urgency: "—",
-      status: "Partially fulfilled",
-      date: "Dec 8",
-    },
-    {
-      id: "REQ-0030",
-      requester: "Musa Garba",
-      blood: "AB+",
-      needed: 1,
-      conf: 1,
-      hospital: "AKTH",
-      urgency: "—",
-      status: "Fulfilled",
-      date: "Nov 28",
-    },
-    {
-      id: "REQ-0028",
-      requester: "Ibrahim Sule",
-      blood: "A−",
-      needed: 2,
-      conf: 0,
-      hospital: "Lagos Island Gen.",
-      urgency: "—",
-      status: "Expired",
-      date: "Nov 20",
-    },
-  ];
+  const { items: rows,loadItems } = useCARequestsStore();
+
+  React.useEffect(() => {
+    loadItems();
+  }, [loadItems]);
 
   return (
     <Shell title={`Community Requests (${COMMUNITY})`}>

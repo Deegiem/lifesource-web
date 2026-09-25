@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { COMMUNITY, COMMUNITIES } from './ui';
+import { COMMUNITY, COMMUNITIES } from './ui/ca-constants';
 import { Bell } from 'lucide-react';
 
 import { Sidebar } from './sidebar';
