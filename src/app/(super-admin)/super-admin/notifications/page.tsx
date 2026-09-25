@@ -104,7 +104,7 @@ export default function SuperAdminNotificationsPage() {
                     </div>
 
                     <div className="shrink-0">
-                      + <NotificationBadge status={notification.status} />
+                      <NotificationBadge status={notification.status} />
                     </div>
                   </div>
 
