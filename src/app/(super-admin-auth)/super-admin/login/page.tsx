@@ -43,7 +43,10 @@ export default function SuperAdminLogin() {
 
   return (
     <main className="min-h-screen bg-(--color-text-primary) w-full flex items-center justify-center p-0 sm:p-6 md:p-12">
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-xl flex flex-col justify-center min-h-[600px] my-auto">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full max-w-xl flex flex-col justify-center min-h-[600px] my-auto"
+      >
         <div className="flex-1 overflow-y-auto px-5 sm:px-8 pt-10 pb-4">
           {/* Logo on dark */}
           <div className="flex items-center gap-3 mb-8">
@@ -126,7 +129,7 @@ export default function SuperAdminLogin() {
           </div>
         </div>
 
-        <div className="px-5 sm:px-8 pb-6 pt-3 space-y-3 flex-shrink-0">
+        <div className="px-5 sm:px-8 pb-6 pt-3 space-y-3 -0">
           <button
             disabled={loading}
             type="submit"

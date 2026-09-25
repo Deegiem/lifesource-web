@@ -131,7 +131,7 @@ function SuperAdminVerificationContent() {
           </div>
         </div>
 
-        <div className="px-5 sm:px-8 pb-6 pt-3 space-y-3 flex-shrink-0">
+        <div className="px-5 sm:px-8 pb-6 pt-3 space-y-3 -0">
           <button
             onClick={handleVerify}
             disabled={loading || otp.length < 6}

@@ -27,7 +27,7 @@ export default function AdminInvitation() {
         <div className="pt-2 space-y-5">
           {/* Premium header */}
           <div className="flex items-start gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-[#4F46E5] flex items-center justify-center flex-shrink-0 mt-1">
+            <div className="w-12 h-12 rounded-2xl bg-[#4F46E5] flex items-center justify-center -0 mt-1">
               <Shield className="w-6 h-6 text-white opacity-90" />
             </div>
             <div>
@@ -57,7 +57,7 @@ export default function AdminInvitation() {
               "Represent your community on the LifeLink platform.",
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-2.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#4F46E5] mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#4F46E5] mt-0.5 -0" />
                 <p className="text-xs text-[#3730A3]">{item}</p>
               </div>
             ))}
@@ -67,7 +67,7 @@ export default function AdminInvitation() {
         </div>
       </div>
 
-      <div className="px-6 pb-6 pt-3 space-y-3 flex-shrink-0 max-w-lg mx-auto w-full">
+      <div className="px-6 pb-6 pt-3 space-y-3 -0 max-w-lg mx-auto w-full">
         <Button
           onClick={() => router.push("/community-admin/setup")}
           className="w-full bg-[#4F46E5] hover:bg-[#4338CA] h-12 text-[15px] font-semibold"
