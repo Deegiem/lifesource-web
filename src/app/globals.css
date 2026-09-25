@@ -48,6 +48,23 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Community Admin Colors */
+  --color-ca-bg: #0B1623;
+  --color-ca-side: #080F1A;
+  --color-ca-card: #0F1E2E;
+  --color-ca-border: #1A3050;
+  --color-ca-text: #D4E4F5;
+  --color-ca-muted: #5A7899;
+  --color-ca-dim: #253E58;
+  --color-ca-accent: #0D9488;
+  --color-ca-red: #C62828;
+  --color-ca-red-bg: #1A0808;
+  --color-ca-green: #16A34A;
+  --color-ca-green-bg: #081810;
+  --color-ca-amber: #B45309;
+  --color-ca-amber-bg: #1A1206;
+  --color-ca-active: #0D2826;
 }
 
 body {

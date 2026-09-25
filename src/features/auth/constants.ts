@@ -20,6 +20,7 @@ export const AUTH_ROUTES = {
   SESSION_EXPIRED: "/session-expired",
   NETWORK_ERROR: "/network-error",
   AUTH_ERROR: "/auth-error",
+  PASSWORD_RESET_SUCCESS: "/password-reset-success",
 } as const;
 
 export const AUTH_COPY = {
