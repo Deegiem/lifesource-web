@@ -3,16 +3,14 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Shell } from "@/components/community-admin/shell";
-import {
-  Card,
-  Crumb,
-  InfoRow,
-  SectionLabel,
-  SBadge,
-  Btn,
-  COMMUNITY,
-  Modal,
-} from "@/components/community-admin/ui";
+import { Card } from "@/components/community-admin/ui/ca-card";
+import { Crumb } from "@/components/community-admin/ui/ca-breadcrumbs";
+import { InfoRow } from "@/components/community-admin/ui/ca-info-row";
+import { SectionLabel } from "@/components/community-admin/ui/ca-section-label";
+import { SBadge } from "@/components/community-admin/ui/ca-badge";
+import { Btn } from "@/components/community-admin/ui/ca-button";
+import { COMMUNITY } from "@/components/community-admin/ui/ca-constants";
+import { Modal } from "@/components/community-admin/ui/ca-modal";
 
 export default function JoinRequestDetailPage({
   params,
