@@ -47,7 +47,7 @@ export default function NetworkError() {
           "Try switching between mobile data and Wi-Fi.",
         ].map((tip, i) => (
           <div key={i} className="flex items-start gap-2.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-(--color-text-muted) mt-1.5 flex-shrink-0" />
+            <div className="w-1.5 h-1.5 rounded-full bg-(--color-text-muted) mt-1.5 -0" />
             <p className="text-sm text-(--color-text-secondary)">{tip}</p>
           </div>
         ))}

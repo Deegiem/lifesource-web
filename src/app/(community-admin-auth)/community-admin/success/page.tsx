@@ -1,8 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import {
-  Badge } from "@/components/community-admin-auth/ui";
+import { Badge } from "@/components/community-admin-auth/ui";
 import { Button } from "@/components/ui/button";
 
 export default function AdminOnboardingSuccess() {
@@ -36,7 +35,9 @@ export default function AdminOnboardingSuccess() {
             Your community is ready, {firstName}.
           </h1>
           <p className="text-[#4B617A] text-base leading-relaxed">
-            <span className="font-semibold text-[#4F46E5]">{communityName}</span>{" "}
+            <span className="font-semibold text-[#4F46E5]">
+              {communityName}
+            </span>{" "}
             is now live on LifeLink.
           </p>
         </div>
@@ -48,11 +49,14 @@ export default function AdminOnboardingSuccess() {
           </p>
           {[
             { step: "1", text: "Invite members to join your community." },
-            { step: "2", text: "Approve membership requests from the dashboard." },
+            {
+              step: "2",
+              text: "Approve membership requests from the dashboard.",
+            },
             { step: "3", text: "Monitor and manage blood requests." },
           ].map((item) => (
             <div key={item.step} className="flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 bg-[#4F46E5]">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center -0 bg-[#4F46E5]">
                 <span className="text-[10px] font-bold text-white">
                   {item.step}
                 </span>
@@ -63,7 +67,7 @@ export default function AdminOnboardingSuccess() {
         </div>
       </div>
 
-      <div className="px-6 pb-6 pt-3 space-y-3 flex-shrink-0 max-w-lg mx-auto w-full">
+      <div className="px-6 pb-6 pt-3 space-y-3 -0 max-w-lg mx-auto w-full">
         <Button
           onClick={() => router.push("/community-admin/dashboard")}
           className="w-full bg-[#4F46E5] hover:bg-[#4338CA] h-12 text-[15px] font-semibold"

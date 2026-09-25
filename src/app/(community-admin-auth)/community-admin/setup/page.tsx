@@ -23,14 +23,16 @@ export default function AdminAccountSetup() {
   const handleContinue = () => {
     const e: Record<string, string> = {};
     if (!fullName.trim()) e.fullName = "Enter your full name.";
-    if (!email.trim() || !email.includes("@")) e.email = "Enter a valid email address.";
-    if (password.length < 8) e.password = "Password must be at least 8 characters.";
-    
+    if (!email.trim() || !email.includes("@"))
+      e.email = "Enter a valid email address.";
+    if (password.length < 8)
+      e.password = "Password must be at least 8 characters.";
+
     if (Object.keys(e).length) {
       setErrors(e);
       return;
     }
-    
+
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -38,11 +40,22 @@ export default function AdminAccountSetup() {
     }, 900);
   };
 
-  console.log("TESTING EXPORTS:", { ScreenHeader: typeof ScreenHeader, Input: typeof Input, PasswordInput: typeof PasswordInput, InfoBanner: typeof InfoBanner, TrustNote: typeof TrustNote, Button: typeof Button });
+  console.log("TESTING EXPORTS:", {
+    ScreenHeader: typeof ScreenHeader,
+    Input: typeof Input,
+    PasswordInput: typeof PasswordInput,
+    InfoBanner: typeof InfoBanner,
+    TrustNote: typeof TrustNote,
+    Button: typeof Button,
+  });
   return (
     <div className="flex flex-col min-h-screen w-full bg-[#FAFBFF]">
       <div className="px-6 pt-8 pb-4 max-w-lg mx-auto w-full">
-        <ScreenHeader onBack={() => router.push("/community-admin/invitation")} step={1} totalSteps={4} />
+        <ScreenHeader
+          onBack={() => router.push("/community-admin/invitation")}
+          step={1}
+          totalSteps={4}
+        />
 
         <div className="pt-4 space-y-5">
           <div>
@@ -65,7 +78,7 @@ export default function AdminAccountSetup() {
             error={errors.fullName}
             autoFocus
           />
-          
+
           <Input
             label="Official email address"
             type="email"
@@ -76,7 +89,7 @@ export default function AdminAccountSetup() {
             error={errors.email}
             hint="Use your official work email address."
           />
-          
+
           <PasswordInput
             label="Create a password"
             value={password}
@@ -86,13 +99,14 @@ export default function AdminAccountSetup() {
 
           <InfoBanner variant="info">
             <p className="text-xs leading-relaxed text-[#3730A3]">
-              Admin accounts require email verification. Make sure you have access to the email address above.
+              Admin accounts require email verification. Make sure you have
+              access to the email address above.
             </p>
           </InfoBanner>
         </div>
       </div>
 
-      <div className="px-6 pb-6 pt-3 space-y-3 flex-shrink-0 max-w-lg mx-auto w-full">
+      <div className="px-6 pb-6 pt-3 space-y-3 -0 max-w-lg mx-auto w-full">
         <Button
           onClick={handleContinue}
           disabled={loading}
