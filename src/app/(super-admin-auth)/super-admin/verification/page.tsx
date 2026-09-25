@@ -36,9 +36,9 @@ function SuperAdminVerificationContent() {
   const secs = String(countdown % 60).padStart(2, "0");
 
   return (
-    <main className="min-h-screen bg-(--color-text-primary) w-full flex items-center justify-center p-6 md:p-12">
+    <main className="min-h-screen bg-(--color-text-primary) w-full flex items-center justify-center p-0 sm:p-6 md:p-12">
       <div className="w-full max-w-xl flex flex-col justify-center min-h-[600px] my-auto">
-        <div className="flex-1 overflow-y-auto px-6 pt-8 pb-4">
+        <div className="flex-1 overflow-y-auto px-5 sm:px-8 pt-8 pb-4">
           <button
             onClick={() => router.back()}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white/60 hover:bg-white/15 transition-colors mb-6"
@@ -131,7 +131,7 @@ function SuperAdminVerificationContent() {
           </div>
         </div>
 
-        <div className="px-6 pb-6 pt-3 space-y-3 ">
+        <div className="px-5 sm:px-8 pb-6 pt-3 space-y-3 flex-shrink-0">
           <button
             onClick={handleVerify}
             disabled={loading || otp.length < 6}
