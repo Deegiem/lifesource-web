@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LIFESOURCE
 
-## Getting Started
+A blood donation coordination platform connecting verified blood requests with willing donors across Nigeria.
 
-First, run the development server:
+Built with [Next.js](https://nextjs.org) (App Router), TypeScript, Tailwind CSS, and Zustand.
+
+## What it does
+
+LIFESOURCE solves a specific problem: blood requests in Nigeria often happen through unverified WhatsApp groups and phone chains, which makes them slow, unreliable, and open to abuse. This platform gives communities — hospitals, churches, NGOs, workplaces — a structured way to:
+
+- **Register verified donors** with blood type, location, and availability
+- **Match requests to donors** based on blood type and proximity
+- **Keep contact details private** — donors and requesters never see each other's info directly
+- **Give community admins** the tools to manage members and requests within their group
+- **Give super admins** platform-wide oversight of communities, hospitals, and operations
+
+## User roles
+
+| Role | Entry point | Purpose |
+|------|-------------|---------|
+| **Donor** | `/auth-entry` | Register, get notified of matching requests, donate |
+| **Requester** | `/auth-entry` → need blood | Create blood requests (requires community membership) |
+| **Community Admin** | `/community-admin/verify` | Manage donors and requests within a community |
+| **Super Admin** | `/super-admin/login` | Oversee communities, hospitals, platform operations |
+
+## Getting started
+
+First, install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+npm install
