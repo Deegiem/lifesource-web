@@ -18,7 +18,7 @@ export default function DonorSuccessPage() {
   const firstName = fullName.trim().split(/\s+/)[0] || "there";
 
   return (
-    <main className="min-h-screen bg-(--color-surface-card)">
+    <main className="min-h-screen bg-(--color-surface-card) rounded-4xl">
       <div className="mx-auto flex min-h-screen w-full flex-col px-(--page-padding-mobile) py-(--space-8) sm:px-(--page-padding-tablet) md:px-12 md:py-12 lg:px-16 lg:py-16">
         {/* Two-column grid on desktop, stacked on mobile */}
         <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center md:max-w-6xl md:grid md:grid-cols-2 md:items-center md:gap-16 lg:gap-24 xl:gap-32">

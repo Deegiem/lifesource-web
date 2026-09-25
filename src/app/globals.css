@@ -149,6 +149,28 @@ h6 {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+.admin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-admin-border) transparent;
+}
+
+.admin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-admin-border);
+  border-radius: var(--radius-full);
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-admin-border-strong);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -10,7 +10,7 @@ export default function VerifyPage() {
   const [resent, setResent] = useState(false);
 
   return (
-    <main className="min-h-screen bg-(--color-surface-card)">
+    <main className="min-h-screen bg-(--color-surface-card) rounded-4xl">
       <div className="mx-auto flex min-h-screen w-full flex-col px-5 py-6 sm:px-8 sm:py-8">
         <button type="button" onClick={() => router.push(AUTH_ROUTES.SIGNUP)} aria-label="Go back"
           className="flex size-10 items-center justify-center rounded-xl text-(--color-text-secondary) hover:bg-(--color-surface-subtle)">

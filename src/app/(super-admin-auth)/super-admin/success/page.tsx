@@ -78,7 +78,7 @@ export default function SuperAdminSuccess() {
 
         <div className="px-5 sm:px-8 pb-6 pt-3 space-y-3 -0 mt-auto">
           <button
-            onClick={() => router.push(AUTH_ROUTES.ENTRY)}
+            onClick={() => router.push(AUTH_ROUTES.SUPER_ADMIN_DASHBOARD)}
             className="w-full bg-white text-(--color-text-primary) font-bold text-base py-4 rounded-2xl hover:bg-white/90 transition-colors min-h-[52px]"
           >
             Go to Admin Dashboard
