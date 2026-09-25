@@ -8,7 +8,7 @@ export default function DonorWelcomePage() {
   const router = useRouter();
 
   return (
-    <main className="min-h-screen bg-(--color-surface-card)">
+    <main className="min-h-screen bg-(--color-surface-card) rounded-4xl">
       {/* Removed max-w-2xl — layout now controls width. Kept flex-col for mobile stack. */}
       <div className="mx-auto flex min-h-screen w-full flex-col px-5 py-6 sm:px-8 sm:py-8">
         <button

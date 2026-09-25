@@ -11,6 +11,7 @@ export const AUTH_ROUTES = {
   SUPER_ADMIN_LOGIN: "/super-admin/login",
   SUPER_ADMIN_VERIFICATION: "/super-admin/verification",
   SUPER_ADMIN_SUCCESS: "/super-admin/success",
+  SUPER_ADMIN_DASHBOARD: "/super-admin/dashboard",
   SUSPENDED_ACCOUNT: "/suspended-account",
   BANNED_ACCOUNT: "/banned-account",
   INVALID_INVITATION: "/invalid-invitation",

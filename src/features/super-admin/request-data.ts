@@ -1,0 +1,127 @@
+import type {
+  PlatformRequest,
+  PlatformRequestDetail,
+} from "./request-types";
+
+export const platformRequestFixtures: PlatformRequest[] = [
+  {
+    id: "REQ-0041",
+    bloodType: "O+",
+    donorsNeeded: 4,
+    confirmedDonors: 3,
+    hospital: "Lagos Island Gen.",
+    community: "Lagos Central",
+    requester: "Amaka Okafor",
+    status: "open",
+    dateLabel: "Dec 12",
+  },
+  {
+    id: "REQ-0040",
+    bloodType: "A+",
+    donorsNeeded: 2,
+    confirmedDonors: 2,
+    hospital: "LUTH",
+    community: "Unilag",
+    requester: "Bello Musa",
+    status: "fulfilled",
+    dateLabel: "Dec 11",
+  },
+  {
+    id: "REQ-0039",
+    bloodType: "B-",
+    donorsNeeded: 6,
+    confirmedDonors: 1,
+    hospital: "Garki Hospital",
+    community: "Abuja Med",
+    requester: "Fatima Yusuf",
+    status: "open",
+    dateLabel: "Dec 11",
+  },
+  {
+    id: "REQ-0038",
+    bloodType: "AB+",
+    donorsNeeded: 12,
+    confirmedDonors: 0,
+    hospital: "NHA Kano",
+    community: "Kano Health Hub",
+    requester: "Emeka Chukwu",
+    status: "escalated",
+    dateLabel: "Dec 10",
+  },
+  {
+    id: "REQ-0037",
+    bloodType: "O-",
+    donorsNeeded: 3,
+    confirmedDonors: 3,
+    hospital: "UPTH",
+    community: "Rivers Red Cross",
+    requester: "Grace Dike",
+    status: "fulfilled",
+    dateLabel: "Dec 9",
+  },
+  {
+    id: "REQ-0036",
+    bloodType: "A-",
+    donorsNeeded: 2,
+    confirmedDonors: 0,
+    hospital: "Ogun State Hosp.",
+    community: "Ogun Health Net",
+    requester: "Adewale Obi",
+    status: "open",
+    dateLabel: "Dec 9",
+  },
+];
+
+export const platformRequestDetailFixtures: Record<
+  string,
+  PlatformRequestDetail
+> = {
+  "REQ-0041": {
+    ...platformRequestFixtures[0],
+    urgency: "high",
+    createdLabel: "Dec 12, 2024 · 10:02 AM",
+    notes: "Pre-op transfusion, surgery Dec 13",
+    requesterPhone: "+234 803 000 0001",
+    requesterRole: "Member",
+    communityLocation: "Lagos",
+    communityType: "Community",
+    donorSlots: [
+      { slot: 1, status: "confirmed", timeLabel: "2 hrs ago" },
+      { slot: 2, status: "confirmed", timeLabel: "3 hrs ago" },
+      { slot: 3, status: "confirmed", timeLabel: "5 hrs ago" },
+      { slot: 4, status: "pending", timeLabel: "—" },
+    ],
+    auditTrail: [
+      {
+        id: "event-001",
+        action: "Request created",
+        actor: "Amaka Okafor",
+        timeLabel: "Dec 12 · 10:02",
+      },
+      {
+        id: "event-002",
+        action: "Broadcast sent",
+        actor: "System",
+        timeLabel: "Dec 12 · 10:32",
+      },
+      {
+        id: "event-003",
+        action: "Donor confirmed",
+        actor: "System",
+        timeLabel: "Dec 12 · 11:10",
+      },
+      {
+        id: "event-004",
+        action: "Donor confirmed",
+        actor: "System",
+        timeLabel: "Dec 12 · 12:44",
+      },
+      {
+        id: "event-005",
+        action: "Donor confirmed",
+        actor: "System",
+        timeLabel: "Dec 12 · 13:01",
+      },
+    ],
+  },
+};
