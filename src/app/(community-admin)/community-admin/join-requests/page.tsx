@@ -18,7 +18,7 @@ import { Modal } from "@/components/community-admin/ui/ca-modal";
 export default function JoinRequestsPage() {
   const router = useRouter();
 
-  const { items: rows, isLoading, loadItems, updateItemStatus } = useCAJoinRequestsStore();
+  const { items: rows,loadItems, updateItemStatus } = useCAJoinRequestsStore();
 
   React.useEffect(() => {
     loadItems();

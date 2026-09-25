@@ -17,7 +17,7 @@ import { Pagination } from "@/components/community-admin/ui/ca-pagination";
 export default function MembersPage() {
   const router = useRouter();
   
-  const { items: rows, isLoading, loadItems } = useCAMembersStore();
+  const { items: rows,loadItems } = useCAMembersStore();
 
   React.useEffect(() => {
     loadItems();

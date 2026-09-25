@@ -17,7 +17,7 @@ import { EmptyState } from "@/components/community-admin/ui/ca-empty-state";
 export default function EscalationsPage() {
   const router = useRouter();
 
-  const { items: rows, isLoading, loadItems } = useCAEscalationsStore();
+  const { items: rows,loadItems } = useCAEscalationsStore();
 
   React.useEffect(() => {
     loadItems();

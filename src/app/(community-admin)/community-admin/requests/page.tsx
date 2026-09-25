@@ -17,7 +17,7 @@ import { COMMUNITY, HOSPITALS, BLOOD_TYPES } from "@/components/community-admin/
 export default function CommunityRequestsPage() {
   const router = useRouter();
 
-  const { items: rows, isLoading, loadItems } = useCARequestsStore();
+  const { items: rows,loadItems } = useCARequestsStore();
 
   React.useEffect(() => {
     loadItems();
