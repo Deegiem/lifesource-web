@@ -30,7 +30,7 @@ export default function DonorWelcomePage() {
                   <div className="flex size-20 items-center justify-center rounded-full bg-(--color-blood-border) md:size-24">
                     <svg
                       viewBox="0 0 48 48"
-                      className="size-12 text-(--color-blood) md:size-14"
+                      className="size-12 text-(--color-blood-soft) md:size-14"
                       fill="none"
                     >
                       <path
