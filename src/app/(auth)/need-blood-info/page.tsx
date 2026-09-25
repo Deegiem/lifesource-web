@@ -14,7 +14,7 @@ export default function NeedBloodInfoPage() {
   const router = useRouter();
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white rounded-4xl">
       <div className="mx-auto flex min-h-screen w-full flex-col px-5 py-6 sm:px-8 sm:py-8">
         <header>
           <button type="button" onClick={() => router.push(AUTH_ROUTES.ENTRY)} aria-label="Go back"
@@ -48,7 +48,7 @@ export default function NeedBloodInfoPage() {
                 {steps.map((step) => {
                   const Icon = step.icon;
                   return (
-                    <div key={step.title} className="flex items-start gap-4 rounded-2xl bg-(--color-surface-subtle) p-4 sm:p-5 md:p-6">
+                    <div key={step.title} className="flex items-start gap-4 rounded-2xl bg-(--color-blood-soft) p-4 sm:p-5 md:p-6">
                       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white text-(--color-brand-primary) shadow-sm md:size-12">
                         <Icon size={20} strokeWidth={2} className="md:size-6" />
                       </div>
@@ -74,7 +74,7 @@ export default function NeedBloodInfoPage() {
 
               <footer className="pt-8 md:pt-10">
                 <button type="button" onClick={() => router.push(AUTH_ROUTES.LOGIN)}
-                  className="flex h-(--control-height-lg) w-full items-center justify-center rounded-2xl border-2 border-(--color-brand-primary) bg-white px-6 text-sm font-semibold text-(--color-brand-primary) transition-colors hover:bg-(--color-brand-primary-soft) focus:outline-none focus:ring-2 focus:ring-(--color-brand-primary) focus:ring-offset-2 md:text-base">
+                  className="flex h-(--control-height-lg) w-full items-center justify-center rounded-2xl border-2 border-(--color-brand-primary) bg-white px-6 text-sm font-semibold text-(--color-brand-primary) transition-colors hover:bg-(--color-brand-primary) hover:text-(--color-blood-soft) hover:border-none focus:outline-none focus:ring-2 focus:ring-(--color-brand-primary) focus:ring-offset-2 md:text-base">
                   Log in to existing account
                 </button>
               </footer>

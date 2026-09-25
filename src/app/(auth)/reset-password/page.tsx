@@ -54,7 +54,7 @@ export default function ResetPasswordPage() {
         </div>
 
         <footer className="pt-8">
-          <button type="button" disabled={!valid} onClick={() => router.push(AUTH_ROUTES.PASSWORD_RESET_SUCCESS)}
+          <button type="button" disabled={!valid} onClick={() => router.push(AUTH_ROUTES.LOGIN)}
             className="h-(--control-height-lg) w-full rounded-(--radius-2xl) bg-(--color-brand-primary) text-sm font-semibold text-(--color-text-inverse) hover:bg-(--color-brand-primary-hover) disabled:cursor-not-allowed disabled:opacity-50">
             Reset password
           </button>
