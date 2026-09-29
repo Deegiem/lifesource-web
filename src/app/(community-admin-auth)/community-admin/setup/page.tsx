@@ -38,7 +38,6 @@ export default function AdminAccountSetup() {
     }, 900);
   };
 
-  console.log("TESTING EXPORTS:", { ScreenHeader: typeof ScreenHeader, Input: typeof Input, PasswordInput: typeof PasswordInput, InfoBanner: typeof InfoBanner, TrustNote: typeof TrustNote, Button: typeof Button });
   return (
     <div className="flex flex-col min-h-screen w-full bg-[#FAFBFF]">
       <div className="px-6 pt-8 pb-4 max-w-lg mx-auto w-full">
