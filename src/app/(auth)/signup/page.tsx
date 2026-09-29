@@ -10,12 +10,25 @@ export default function SignupPage() {
   const [show, setShow] = useState(false);
   const [confirmShow, setConfirmShow] = useState(false);
   const [agreed, setAgreed] = useState(false);
-  const [form, setForm] = useState({ fullName: "", email: "", phone: "", password: "", confirmPassword: "" });
+  const [form, setForm] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  const update = (key: keyof typeof form, value: string) => setForm((f) => ({ ...f, [key]: value }));
-  const valid = !!form.fullName && !!form.email && !!form.phone && form.password.length >= 8 &&
-    /[A-Z]/.test(form.password) && /[0-9]/.test(form.password) &&
-    form.password === form.confirmPassword && agreed;
+  const update = (key: keyof typeof form, value: string) =>
+    setForm((f) => ({ ...f, [key]: value }));
+  const valid =
+    !!form.fullName &&
+    !!form.email &&
+    !!form.phone &&
+    form.password.length >= 8 &&
+    /[A-Z]/.test(form.password) &&
+    /[0-9]/.test(form.password) &&
+    form.password === form.confirmPassword &&
+    agreed;
 
   return (
     // Mobile: grows naturally. Desktop: locked to viewport, no scroll.
@@ -30,7 +43,6 @@ export default function SignupPage() {
           <ArrowLeft size={20} />
         </button>
 
-        {/* Vertically centered on desktop, natural flow on mobile */}
         <div className="flex flex-1 flex-col md:items-center md:justify-center md:py-8">
           <div className="mx-auto flex w-full max-w-2xl flex-col pt-6 sm:pt-8 md:pt-0 md:max-w-5xl">
             <h1 className="text-2xl font-extrabold text-(--color-text-primary) sm:text-3xl md:text-4xl">
@@ -42,11 +54,14 @@ export default function SignupPage() {
 
             <form
               className="mt-7 md:mt-8"
-              onSubmit={(e) => { e.preventDefault(); if (valid) router.push(AUTH_ROUTES.VERIFY); }}
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (valid) router.push(AUTH_ROUTES.VERIFY);
+              }}
             >
               {/* Two columns on desktop, single column on mobile */}
               <div className="flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-8 lg:gap-12">
-                {/* LEFT COLUMN — identity fields */}
+                {/* LEFT COLUMN */}
                 <div className="space-y-4 md:space-y-5">
                   {[
                     ["fullName", "Full name", "text", "Adaeze Okonkwo"],
@@ -65,7 +80,7 @@ export default function SignupPage() {
                   ))}
                 </div>
 
-                {/* RIGHT COLUMN — password fields */}
+                {/* RIGHT COLUMN  */}
                 <div className="space-y-4 md:space-y-5">
                   <PasswordField
                     id="password"
@@ -116,9 +131,13 @@ export default function SignupPage() {
                   />
                   <span className="text-xs leading-relaxed text-(--color-text-secondary)">
                     I agree to the{" "}
-                    <span className="font-semibold text-(--color-brand-primary) underline">Terms of Service</span>{" "}
+                    <span className="font-semibold text-(--color-brand-primary) underline">
+                      Terms of Service
+                    </span>{" "}
                     and{" "}
-                    <span className="font-semibold text-(--color-brand-primary) underline">Privacy Policy</span>
+                    <span className="font-semibold text-(--color-brand-primary) underline">
+                      Privacy Policy
+                    </span>
                   </span>
                 </label>
 
@@ -144,10 +163,27 @@ export default function SignupPage() {
   );
 }
 
-function Field({ id, label, type, placeholder, value, onChange }: { id: string; label: string; type: string; placeholder: string; value: string; onChange: (v: string) => void }) {
+function Field({
+  id,
+  label,
+  type,
+  placeholder,
+  value,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  type: string;
+  placeholder: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <div className="space-y-2">
-      <label htmlFor={id} className="text-sm font-semibold text-(--color-text-primary)">
+      <label
+        htmlFor={id}
+        className="text-sm font-semibold text-(--color-text-primary)"
+      >
         {label}
       </label>
       <input
@@ -163,10 +199,29 @@ function Field({ id, label, type, placeholder, value, onChange }: { id: string; 
   );
 }
 
-function PasswordField({ id, label, value, show, toggle, onChange, placeholder = "Enter your password" }: { id: string; label: string; value: string; show: boolean; toggle: () => void; onChange: (v: string) => void; placeholder?: string }) {
+function PasswordField({
+  id,
+  label,
+  value,
+  show,
+  toggle,
+  onChange,
+  placeholder = "Enter your password",
+}: {
+  id: string;
+  label: string;
+  value: string;
+  show: boolean;
+  toggle: () => void;
+  onChange: (v: string) => void;
+  placeholder?: string;
+}) {
   return (
     <div className="space-y-2">
-      <label htmlFor={id} className="text-sm font-semibold text-(--color-text-primary)">
+      <label
+        htmlFor={id}
+        className="text-sm font-semibold text-(--color-text-primary)"
+      >
         {label}
       </label>
       <div className="relative">

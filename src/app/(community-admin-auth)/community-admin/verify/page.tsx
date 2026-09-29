@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Mail } from "lucide-react";
-import {
-  ScreenHeader,
-  OTPInput,
-} from "@/components/community-admin-auth/ui";
+import { ScreenHeader, OTPInput } from "@/components/community-admin-auth/ui";
 import { Button } from "@/components/ui/button";
 
 export default function AdminVerification() {
@@ -32,7 +29,11 @@ export default function AdminVerification() {
   return (
     <div className="flex flex-col min-h-screen w-full bg-[#FAFBFF]">
       <div className="px-6 pt-8 pb-4 max-w-lg mx-auto w-full">
-        <ScreenHeader onBack={() => router.push("/community-admin/setup")} step={2} totalSteps={4} />
+        <ScreenHeader
+          onBack={() => router.push("/community-admin/setup")}
+          step={2}
+          totalSteps={4}
+        />
 
         <div className="pt-4 space-y-8">
           <div className="w-14 h-14 rounded-2xl bg-[#EEF2FF] flex items-center justify-center text-[#4F46E5]">
@@ -45,7 +46,9 @@ export default function AdminVerification() {
             </h1>
             <p className="text-[#4B617A] text-base leading-relaxed">
               We sent a 6-digit code to{" "}
-              <span className="font-semibold text-[#0D1B2A] break-all">{email}</span>
+              <span className="font-semibold text-[#0D1B2A] break-all">
+                {email}
+              </span>
             </p>
           </div>
 
@@ -83,7 +86,7 @@ export default function AdminVerification() {
         </div>
       </div>
 
-      <div className="px-6 pb-6 pt-3 space-y-3 flex-shrink-0 max-w-lg mx-auto w-full">
+      <div className="px-6 pb-6 pt-3 space-y-3 -0 max-w-lg mx-auto w-full">
         <Button
           onClick={handleVerify}
           disabled={loading || otp.length < 6}

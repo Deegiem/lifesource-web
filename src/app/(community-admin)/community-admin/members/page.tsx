@@ -3,20 +3,25 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Shell } from '@/components/community-admin/shell';
-import { Card, TH, TD, SBadge, Btn, COMMUNITY, FilterRow, SearchInput, Sel, Pagination, TableRow } from '@/components/community-admin/ui';
+import { Card } from "@/components/community-admin/ui/ca-card";
+import { TH, TD, TableRow } from "@/components/community-admin/ui/ca-table";
+import { SBadge } from "@/components/community-admin/ui/ca-badge";
+import { Btn } from "@/components/community-admin/ui/ca-button";
+import { COMMUNITY } from "@/components/community-admin/ui/ca-constants";
+import { useCAMembersStore } from "@/stores/community-admin-members.store";
+import { FilterRow } from "@/components/community-admin/ui/ca-filter-row";
+import { SearchInput } from "@/components/community-admin/ui/ca-search-input";
+import { Sel } from "@/components/community-admin/ui/ca-select";
+import { Pagination } from "@/components/community-admin/ui/ca-pagination";
 
 export default function MembersPage() {
   const router = useRouter();
   
-  const rows = [
-    { name: 'Amaka Okafor',     contact: '+234 803 000 0001', status: 'Active',    joined: 'Jan 10, 2024', activity: '1 active request' },
-    { name: 'Bode Lawal',       contact: '+234 806 000 0002', status: 'Active',    joined: 'Feb 3, 2024',  activity: '1 active request' },
-    { name: 'Chioma Eze',       contact: '+234 812 000 0003', status: 'Active',    joined: 'Mar 12, 2024', activity: 'No active request' },
-    { name: 'Danladi Usman',    contact: '+234 801 000 0004', status: 'Suspended', joined: 'Apr 5, 2024',  activity: 'No active request' },
-    { name: 'Ngozi Okonkwo',    contact: '+234 805 000 0005', status: 'Active',    joined: 'May 20, 2024', activity: 'No active request' },
-    { name: 'Musa Garba',       contact: '+234 818 000 0006', status: 'Active',    joined: 'Jun 8, 2024',  activity: 'No active request' },
-    { name: 'Fatima Abdullahi', contact: '+234 803 000 0007', status: 'Pending',   joined: 'Dec 1, 2024',  activity: 'No active request' },
-  ];
+  const { items: rows,loadItems } = useCAMembersStore();
+
+  React.useEffect(() => {
+    loadItems();
+  }, [loadItems]);
 
   return (
     <Shell 

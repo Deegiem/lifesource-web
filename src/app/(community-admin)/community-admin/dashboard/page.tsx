@@ -3,7 +3,12 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Shell } from '@/components/community-admin/shell';
-import { Card, TH, TD, SBadge, Btn, COMMUNITY, Modal, TableRow } from '@/components/community-admin/ui';
+import { Card } from "@/components/community-admin/ui/ca-card";
+import { TH, TD, TableRow } from "@/components/community-admin/ui/ca-table";
+import { SBadge } from "@/components/community-admin/ui/ca-badge";
+import { Btn } from "@/components/community-admin/ui/ca-button";
+import { COMMUNITY } from "@/components/community-admin/ui/ca-constants";
+import { Modal } from "@/components/community-admin/ui/ca-modal";
 
 export default function DashboardPage() {
   const router = useRouter();
