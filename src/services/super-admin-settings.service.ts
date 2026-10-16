@@ -1,13 +1,9 @@
-import { platformSettings } from "@/features/super-admin/settings-data";
-import type { SuperAdminPlatformSettings } from "@/features/super-admin/settings-types";
+import type { SuperAdminPlatformSettings } from '@/features/super-admin/settings-types';
 
 export async function getPlatformSettings(): Promise<SuperAdminPlatformSettings> {
-  return platformSettings;
+  throw new Error('The supplied LIFESOURCE API does not include platform settings endpoints.');
 }
 
-export async function updatePlatformSettings(
-  settings: SuperAdminPlatformSettings
-): Promise<SuperAdminPlatformSettings> {
-  // Replace with PATCH /settings when the backend is ready.
-  return settings;
+export async function updatePlatformSettings(_settings: SuperAdminPlatformSettings): Promise<SuperAdminPlatformSettings> {
+  throw new Error('The supplied LIFESOURCE API does not include platform settings endpoints.');
 }

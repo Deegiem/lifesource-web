@@ -18,7 +18,7 @@ export default function NewBloodRequestPage() {
   useEffect(() => { void loadHospitals(); void loadRequesterContext(); }, [loadHospitals, loadRequesterContext]);
   const donorCount = Number.parseInt(donors, 10) || 0;
   const needsEscalation = donorCount > MAX_DIRECT_DONORS;
-  const canCreate = requester?.membershipStatus === 'Active' && (!requester.cooldownUntil || new Date(requester.cooldownUntil).getTime() <= Date.now());
+  const canCreate = requester?.membershipStatus === 'Active';
   const hospitalOptions = useMemo(() => hospitals.map((hospital) => ({ value: hospital.id, label: hospital.name })), [hospitals]);
   const next = () => {
     const nextErrors: Record<string, string> = {};
@@ -33,7 +33,7 @@ export default function NewBloodRequestPage() {
     router.push(`/community/requests/review?${params.toString()}`);
   };
   return <PageShell><BackLink href="/community/dashboard" /><PageHeader title="New blood request" description="Provide the details needed to match eligible donors." />
-    {!canCreate ? <div className="mb-6 rounded-(--radius-lg) border border-(--color-warning-soft) bg-(--color-warning-soft) p-4 text-sm text-(--color-warning)">Your account must have active community membership and no requester cooldown before a request can be created.</div> : null}
+    {!canCreate ? <div className="mb-6 rounded-(--radius-lg) border border-(--color-warning-soft) bg-(--color-warning-soft) p-4 text-sm text-(--color-warning)">Your community membership must be active. Request cooldown eligibility is checked by the API when you submit.</div> : null}
     <div className="space-y-6 rounded-(--radius-xl) border border-(--color-border-default) bg-white p-5 md:p-6">
       <div><label className="mb-2 block text-sm font-semibold">Blood type needed</label><BloodTypeGrid value={bloodType} onChange={(value) => { setBloodType(value); setErrors((e) => ({ ...e, bloodType: '' })); }} />{errors.bloodType ? <p className="mt-2 text-xs text-(--color-danger)">{errors.bloodType}</p> : null}</div>
       <Field label="Number of donors needed" value={donors} onChange={(value) => { setDonors(value.replace(/\D/g, '')); setErrors((e) => ({ ...e, donors: '' })); }} placeholder="e.g. 3" type="number" error={errors.donors} />

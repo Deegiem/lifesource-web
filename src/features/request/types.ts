@@ -59,4 +59,5 @@ export interface DonorState {
   bloodType: BloodType;
   availability: 'available' | 'not_available';
   cooldownUntil: string | null;
+  isEligible: boolean;
 }

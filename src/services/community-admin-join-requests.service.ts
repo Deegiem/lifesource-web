@@ -1,19 +1,31 @@
-import { CAJoinRequests } from "@/features/community-admin/join-requests-types";
-import { MOCK_JOIN_REQUESTS } from "@/features/community-admin/join-requests-data";
+import type { CAJoinRequests } from "@/features/community-admin/join-requests-types";
+import { apiService } from "@/services/api.service";
 
 export const getCAJoinRequests = async (): Promise<CAJoinRequests[]> => {
-  return new Promise((resolve) =>
-    setTimeout(() => resolve(MOCK_JOIN_REQUESTS), 500),
-  );
+  const result = await apiService.listMembers({ status: "pending", limit: 500, offset: 0 });
+  return result.members.map((member) => ({
+    id: member.id,
+    name: member.full_name,
+    contact: member.email,
+    date: new Date(member.created_at).toLocaleDateString(),
+    method: member.method,
+    status: member.status.toLowerCase().replace(/^./, (letter) => letter.toUpperCase()),
+  }));
 };
 
 export const getCAJoinRequestsById = async (
   id: string,
 ): Promise<CAJoinRequests | null> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const item = MOCK_JOIN_REQUESTS.find((i) => i.id === id);
-      resolve(item || null);
-    }, 500);
-  });
+  const member = await apiService.getMember(id);
+  return {
+    id: member.id,
+    name: member.full_name,
+    contact: member.email,
+    date: new Date(member.created_at).toLocaleDateString(),
+    method: member.method,
+    status: member.status.toLowerCase().replace(/^./, (letter) => letter.toUpperCase()),
+  };
 };
+
+export const approveCAJoinRequest = (id: string) => apiService.approveMember(id);
+export const rejectCAJoinRequest = (id: string, reason?: string) => apiService.rejectMember(id, { reason });

@@ -4,7 +4,7 @@ export interface CommunityAdminInvitation {
   communityName: string;
   inviteeName: string;
   email: string;
-  status: "pending" | "accepted" | "expired";
+  status: 'pending' | 'accepted' | 'declined' | 'revoked' | 'expired';
   sentLabel: string;
   expiresLabel: string;
 }

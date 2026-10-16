@@ -15,7 +15,7 @@ import { useSuperAdminHospitalsStore } from "@/stores/super-admin-hospitals.stor
 
 export default function HospitalDetailsPage() {
   const params = useParams<{ hospitalId: string }>();
-  const { hospitals, isLoading, error, loadHospitals } = useSuperAdminHospitalsStore();
+  const { hospitals, isLoading, isSubmitting, error, loadHospitals, deactivateHospital, updateHospital } = useSuperAdminHospitalsStore();
 
   useEffect(() => { if (!hospitals.length) void loadHospitals(); }, [hospitals.length, loadHospitals]);
   const hospital = hospitals.find((item) => item.id === params.hospitalId);
@@ -26,8 +26,39 @@ export default function HospitalDetailsPage() {
       <AdminBreadcrumbs items={[{ label: "Hospitals", href: "/super-admin/hospitals" }, { label: params.hospitalId }]} />
       {isLoading ? <AdminCard><AdminLoadingState /></AdminCard> : error ? <AdminCard><AdminErrorState message={error} onRetry={() => void loadHospitals()} /></AdminCard> : !hospital ? <AdminCard><AdminErrorState message="Hospital not found." /></AdminCard> : <>
         <Link href="/super-admin/hospitals" className="inline-flex items-center gap-2 text-sm text-(--color-admin-muted) hover:text-(--color-admin-text)"><ArrowLeft className="size-4" />Back to hospitals</Link>
-        <AdminPageHeader title={hospital.name} description={`${hospital.id} · ${hospital.address}, ${hospital.lga}, ${hospital.state}`} action={<AdminBadge status={hospital.status} />} />
-        <div className="grid gap-6 sm:grid-cols-2">
+        <AdminPageHeader
+          title={hospital.name}
+          description={`${hospital.id} · ${hospital.address}, ${hospital.lga}, ${hospital.state}`}
+          action={
+            <div className="flex items-center gap-3">
+              <AdminBadge status={hospital.status} />
+
+              <Link
+                href={`/super-admin/hospitals/${hospital.id}/edit`}
+                className="rounded-md border border-(--color-admin-border) px-3 py-2 text-xs font-semibold hover:bg-(--color-admin-surface-subtle)"
+              >
+                Edit
+              </Link>
+
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={() =>
+                  void (hospital.status === "active"
+                    ? deactivateHospital(hospital.id)
+                    : updateHospital(hospital.id, { is_active: true }))
+                }
+                className="rounded-md border border-(--color-admin-border) px-3 py-2 text-xs font-semibold disabled:opacity-50"
+              >
+                {isSubmitting
+                  ? "Saving…"
+                  : hospital.status === "active"
+                    ? "Deactivate"
+                    : "Reactivate"}
+              </button>
+            </div>
+          }
+        />        <div className="grid gap-6 sm:grid-cols-2">
           <AdminCard className="p-6"><h2 className="text-lg font-bold">Hospital information</h2><div className="mt-5"><AdminInfoRow label="Address" value={hospital.address} /><AdminInfoRow label="LGA" value={hospital.lga} /><AdminInfoRow label="State" value={hospital.state} /><AdminInfoRow label="Created" value={hospital.createdLabel} /></div></AdminCard>
           <AdminCard className="p-6"><div className="flex items-center gap-2"><MapPin className="size-5 text-(--color-admin-accent)" /><h2 className="text-lg font-bold">Location</h2></div><p className="mt-4 text-sm text-(--color-admin-muted)">{hospital.latitude !== null && hospital.longitude !== null ? `${hospital.latitude}, ${hospital.longitude}` : "Coordinates not provided"}</p></AdminCard>
         </div>

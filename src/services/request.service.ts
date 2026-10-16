@@ -1,16 +1,5 @@
-import {
-  INITIAL_ACCEPTANCES,
-  INITIAL_REQUESTS,
-  MOCK_DONOR,
-  MOCK_HOSPITALS,
-  MOCK_REQUESTER,
-} from '@/features/request/data';
-import {
-  DONOR_COOLDOWN_HOURS,
-  FULFILLED_REQUESTER_COOLDOWN_HOURS,
-  MAX_DIRECT_DONORS,
-  REQUESTER_COOLDOWN_HOURS,
-} from '@/features/request/constants';
+import { apiService } from '@/services/api.service';
+import type { RequestResponse, HospitalResponse } from '@/features/api/types';
 import type {
   BloodRequest,
   CreateBloodRequestInput,
@@ -20,156 +9,86 @@ import type {
   RequesterState,
 } from '@/features/request/types';
 
-let requests = structuredClone(INITIAL_REQUESTS);
-let acceptances = structuredClone(INITIAL_ACCEPTANCES);
-let requester = structuredClone(MOCK_REQUESTER);
-let donor = structuredClone(MOCK_DONOR);
-let requestSequence = 42;
-let acceptanceSequence = 39;
+const toHospital = (hospital: HospitalResponse): Hospital => ({
+  id: hospital.id,
+  name: hospital.name,
+  address: hospital.address,
+  state: hospital.state_name,
+  lga: hospital.lga_name,
+  latitude: hospital.latitude,
+  longitude: hospital.longitude,
+});
 
-const clone = <T>(value: T): T => structuredClone(value);
-const cooldownActive = (until: string | null) => Boolean(until && new Date(until).getTime() > Date.now());
-const futureDate = (hours: number) => new Date(Date.now() + hours * 60 * 60 * 1000).toISOString();
-
-const createVerificationCode = () => {
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = '';
-  for (let index = 0; index < 6; index += 1) {
-    code += alphabet[Math.floor(Math.random() * alphabet.length)];
-  }
-  return code;
-};
+const toRequest = (request: RequestResponse): BloodRequest => ({
+  id: request.reference_code || request.id,
+  requesterId: '',
+  requesterName: 'Requester',
+  communityName: '',
+  bloodType: request.blood_type_needed as BloodRequest['bloodType'],
+  donorsNeeded: request.donors_needed,
+  confirmedDonors: request.confirmed_count,
+  hospital: {
+    id: request.hospital.id,
+    name: request.hospital.name,
+    address: request.hospital.address,
+    state: request.hospital.state_name,
+    lga: request.hospital.lga_name,
+    latitude: null,
+    longitude: null,
+  },
+  urgency: request.urgency.toLowerCase() as BloodRequest['urgency'],
+  notes: request.notes ?? '',
+  status: request.status.toLowerCase() === 'fulfilled' ? 'Fulfilled' : request.status.toLowerCase() === 'expired' ? 'Expired' : 'Open',
+  createdAt: request.created_at,
+});
 
 export const requestService = {
   async getHospitals(): Promise<Hospital[]> {
-    return clone(MOCK_HOSPITALS);
+    const items = await apiService.listPublicHospitals({ limit: 500 });
+    return items.map(toHospital);
   },
-
   async getRequester(): Promise<RequesterState> {
-    if (requester.cooldownUntil && !cooldownActive(requester.cooldownUntil)) requester.cooldownUntil = null;
-    return clone(requester);
+    const profile = await apiService.getMyProfile();
+    return { membershipStatus: profile.community?.member_status.toLowerCase() === 'active' ? 'Active' : 'Pending', cooldownUntil: null };
   },
-
   async getDonor(): Promise<DonorState> {
-    if (donor.cooldownUntil && !cooldownActive(donor.cooldownUntil)) donor.cooldownUntil = null;
-    return clone(donor);
+    const [profile, user] = await Promise.all([apiService.getMyDonorProfile(), apiService.currentSession()]);
+    return {
+      donorId: profile.profile_id,
+      donorName: `${user.first_name} ${user.last_name}`,
+      bloodType: profile.blood_type as DonorState['bloodType'],
+      availability: profile.availability ? 'available' : 'not_available',
+      cooldownUntil: profile.eligible_at,
+      isEligible: profile.is_eligible,
+    };
   },
-
-  async listRequests(): Promise<BloodRequest[]> {
-    return clone(requests);
-  },
-
-  async getRequest(requestId: string): Promise<BloodRequest | null> {
-    return clone(requests.find((request) => request.id === requestId) ?? null);
-  },
-
-  async listMyRequests(): Promise<BloodRequest[]> {
-    return clone(requests.filter((request) => request.requesterId === 'member-001'));
-  },
-
-  async listOpenRequests(): Promise<BloodRequest[]> {
-    return clone(requests.filter((request) => request.status === 'Open' && request.confirmedDonors < request.donorsNeeded));
-  },
-
-  async listMyAcceptances(): Promise<DonorAcceptance[]> {
-    return clone(acceptances.filter((item) => item.donorId === donor.donorId));
-  },
-
-  async getAcceptance(requestId: string): Promise<DonorAcceptance | null> {
-    return clone(acceptances.find((item) => item.requestId === requestId && item.donorId === donor.donorId) ?? null);
-  },
-
+  async listRequests(): Promise<BloodRequest[]> { throw new Error('The supplied API does not include a request-list endpoint.'); },
+  async getRequest(requestId: string): Promise<BloodRequest | null> { void requestId; throw new Error('The supplied API does not include a request-detail endpoint.'); },
+  async listMyRequests(): Promise<BloodRequest[]> { throw new Error('The supplied API does not include a my-requests endpoint.'); },
+  async listOpenRequests(): Promise<BloodRequest[]> { throw new Error('The supplied API does not include an open-requests endpoint.'); },
+  async listMyAcceptances(): Promise<DonorAcceptance[]> { throw new Error('The supplied API does not include donor-acceptance endpoints.'); },
+  async getAcceptance(requestId: string): Promise<DonorAcceptance | null> { void requestId; throw new Error('The supplied API does not include donor-acceptance endpoints.'); },
   async createRequest(input: CreateBloodRequestInput): Promise<BloodRequest> {
-    if (requester.membershipStatus !== 'Active') throw new Error('Your community membership is not active.');
-    if (cooldownActive(requester.cooldownUntil)) throw new Error('You are currently in requester cooldown.');
-    if (input.donorsNeeded < 1 || input.donorsNeeded > MAX_DIRECT_DONORS) {
-      throw new Error(`Direct requests support 1-${MAX_DIRECT_DONORS} donors.`);
-    }
-
-    const hospital = MOCK_HOSPITALS.find((item) => item.id === input.hospitalId);
-    if (!hospital) throw new Error('Selected hospital was not found.');
-
-    const request: BloodRequest = {
-      id: `REQ-${String(requestSequence++).padStart(4, '0')}`,
-      requesterId: 'member-001',
-      requesterName: 'Amaka Okafor',
-      communityName: 'Al-Hikmah Community',
-      bloodType: input.bloodType,
-      donorsNeeded: input.donorsNeeded,
-      confirmedDonors: 0,
-      hospital,
-      urgency: input.urgency,
-      notes: input.notes.trim(),
-      status: 'Open',
-      createdAt: new Date().toISOString(),
-    };
-
-    requests = [request, ...requests];
-    requester.cooldownUntil = futureDate(REQUESTER_COOLDOWN_HOURS);
-    return clone(request);
+    const created = await apiService.createRequest({
+      blood_type_needed: input.bloodType,
+      donors_needed: input.donorsNeeded,
+      hospital_id: input.hospitalId,
+      urgency: input.urgency.toLowerCase() as 'low' | 'medium' | 'high' | 'critical',
+      notes: input.notes.trim() || null,
+    });
+    return toRequest(created);
   },
-
   async acceptRequest(requestId: string): Promise<DonorAcceptance> {
-    if (donor.availability !== 'available') throw new Error('Your donor availability is currently turned off.');
-    if (cooldownActive(donor.cooldownUntil)) throw new Error('You are currently in donor cooldown.');
-
-    const request = requests.find((item) => item.id === requestId);
-    if (!request || request.status !== 'Open') throw new Error('This request is no longer open.');
-    if (request.confirmedDonors >= request.donorsNeeded) throw new Error('This request is already fulfilled.');
-
-    const existing = acceptances.find(
-      (item) => item.requestId === requestId && item.donorId === donor.donorId && item.status === 'Pending Confirmation',
-    );
-    if (existing) return clone(existing);
-
-    const acceptance: DonorAcceptance = {
-      id: `ACC-${String(acceptanceSequence++).padStart(4, '0')}`,
-      requestId,
-      donorId: donor.donorId,
-      donorName: donor.donorName,
-      status: 'Pending Confirmation',
-      verificationCode: createVerificationCode(),
-      createdAt: new Date().toISOString(),
-      confirmedAt: null,
-    };
-
-    acceptances = [acceptance, ...acceptances];
-    return clone(acceptance);
+    void requestId;
+    throw new Error('Accepting a donation is not available in the supplied API contract.');
   },
-
   async confirmDonation(requestId: string, code: string): Promise<{ request: BloodRequest; acceptance: DonorAcceptance }> {
-    const acceptance = acceptances.find(
-      (item) => item.requestId === requestId && item.verificationCode.toUpperCase() === code.trim().toUpperCase(),
-    );
-    if (!acceptance) throw new Error('Invalid verification code. Please check the code and try again.');
-    if (acceptance.status === 'Confirmed') throw new Error('This verification code has already been used.');
-
-    const request = requests.find((item) => item.id === requestId);
-    if (!request) throw new Error('Request not found.');
-    if (request.status !== 'Open') throw new Error('This request is no longer open.');
-    if (request.confirmedDonors >= request.donorsNeeded) throw new Error('This request has already reached its donor target.');
-
-    acceptance.status = 'Confirmed';
-    acceptance.confirmedAt = new Date().toISOString();
-    request.confirmedDonors += 1;
-
-    if (request.confirmedDonors >= request.donorsNeeded) {
-      request.status = 'Fulfilled';
-      requester.cooldownUntil = futureDate(FULFILLED_REQUESTER_COOLDOWN_HOURS);
-    }
-
-    donor.cooldownUntil = futureDate(DONOR_COOLDOWN_HOURS);
-
-    return { request: clone(request), acceptance: clone(acceptance) };
+    void requestId;
+    void code;
+    throw new Error('Donation confirmation is not available in the supplied API contract.');
   },
-
   async expireRequest(requestId: string): Promise<BloodRequest> {
-    const request = requests.find((item) => item.id === requestId);
-    if (!request) throw new Error('Request not found.');
-    if (request.status !== 'Open') throw new Error('Only open requests can be expired.');
-
-    request.status = 'Expired';
-    requester.cooldownUntil = futureDate(REQUESTER_COOLDOWN_HOURS);
-    return clone(request);
+    void requestId;
+    throw new Error('Request expiration is not available in the supplied API contract.');
   },
 };

@@ -43,7 +43,7 @@ export default function MyRequestsPage() {
         <div className="rounded-(--radius-xl) border border-(--color-border-default) bg-white p-10 text-center text-sm text-(--color-text-muted)">No requests in this category.</div>
       ) : (
         <div className="grid gap-3 md:grid-cols-2">
-          {filtered.map((request) => <RequestCard key={request.id} request={request} href={`/community/requests/${request.id}`} />)}
+          {filtered.map((request) => <RequestCard key={request.id} request={request as never} href={`/community/requests/${request.id}`} />)}
         </div>
       )}
     </PageShell>

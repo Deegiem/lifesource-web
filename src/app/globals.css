@@ -50,21 +50,23 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 
   /* Community Admin Colors */
-  --color-ca-bg: #0B1623;
-  --color-ca-side: #080F1A;
-  --color-ca-card: #0F1E2E;
-  --color-ca-border: #1A3050;
-  --color-ca-text: #D4E4F5;
-  --color-ca-muted: #5A7899;
-  --color-ca-dim: #253E58;
-  --color-ca-accent: #0D9488;
-  --color-ca-red: #C62828;
-  --color-ca-red-bg: #1A0808;
-  --color-ca-green: #16A34A;
-  --color-ca-green-bg: #081810;
-  --color-ca-amber: #B45309;
-  --color-ca-amber-bg: #1A1206;
-  --color-ca-active: #0D2826;
+--color-ca-bg: var(--color-admin-page);
+--color-ca-side: var(--color-admin-sidebar);
+--color-ca-card: var(--color-admin-card);
+--color-ca-border: var(--color-admin-border);
+--color-ca-text: var(--color-admin-text);
+--color-ca-muted: var(--color-admin-muted);
+--color-ca-dim: var(--color-admin-dim);
+--color-ca-accent: var(--color-admin-accent);
+--color-ca-active: var(--color-admin-accent-soft);
+
+/* Semantic colors — reuse the shared brand tokens */
+--color-ca-red: var(--color-blood);
+--color-ca-red-bg: var(--color-admin-danger-soft);
+--color-ca-green: var(--color-success);
+--color-ca-green-bg: var(--color-admin-success-soft);
+--color-ca-amber: var(--color-warning);
+--color-ca-amber-bg: var(--color-admin-warning-soft);
 }
 
 body {

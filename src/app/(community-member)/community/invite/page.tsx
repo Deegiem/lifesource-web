@@ -9,12 +9,12 @@ import { useCommunityMemberStore } from "@/stores/community-member.store";
 
 function CommunityInvitationContent() {
   const params = useSearchParams();
-  const token = params.get("token") ?? "INV-ALHIKMAH-2026";
+  const token = params.get("token") ?? "";
   const { invitation, invitationState, isLoading, error, validateInvitation } =
     useCommunityMemberStore();
 
   useEffect(() => {
-    void validateInvitation(token);
+    if (token) void validateInvitation(token);
   }, [token, validateInvitation]);
 
   return (
@@ -60,6 +60,8 @@ function CommunityInvitationContent() {
               Continue
             </Link>
           </>
+        ) : invitationState === "used" ? (
+          <><StateIcon type="error" /><h1 className="text-2xl font-extrabold">Invitation already used</h1><p className="text-sm text-(--color-text-secondary)">This invitation has already been accepted.</p></>
         ) : (
           <>
             <StateIcon type="error" />

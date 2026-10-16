@@ -2,16 +2,16 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Shell } from "@/components/community-admin/shell";
+import { useAdminPageHeader } from "@/components/admin/layout/admin-shell";
 import { Card } from "@/components/community-admin/ui/ca-card";
 import { Crumb } from "@/components/community-admin/ui/ca-breadcrumbs";
 import { InfoRow } from "@/components/community-admin/ui/ca-info-row";
 import { SectionLabel } from "@/components/community-admin/ui/ca-section-label";
 import { SBadge } from "@/components/community-admin/ui/ca-badge";
 import { Btn } from "@/components/community-admin/ui/ca-button";
-import { COMMUNITY } from "@/components/community-admin/ui/ca-constants";
 import { Modal } from "@/components/community-admin/ui/ca-modal";
 import { TH, TD } from "@/components/community-admin/ui/ca-table";
+import { useCARequestsStore } from "@/stores/community-admin-requests.store";
 
 export default function RequestDetailPage({
   params,
@@ -21,36 +21,48 @@ export default function RequestDetailPage({
   const { id } = React.use(params);
   const router = useRouter();
   const [showEscalationNote, setShowEscalationNote] = useState(false);
-  const reqId = decodeURIComponent(id) || "REQ-0041";
-  const isHighDonor = reqId === "REQ-0041";
 
-  const slots = [
-    { slot: 1, status: "Confirmed", time: "2 hrs ago" },
-    { slot: 2, status: "Confirmed", time: "3 hrs ago" },
-    { slot: 3, status: "Confirmed", time: "5 hrs ago" },
-    { slot: 4, status: "Pending", time: "—" },
-  ];
+  const { selectedItem, isLoading, error, loadItem } = useCARequestsStore();
 
-  const audit = [
-    { action: "Request created", time: "Dec 12 · 10:02" },
-    { action: "Broadcast sent", time: "Dec 12 · 10:32" },
-    { action: "Donor confirmed", time: "Dec 12 · 11:10" },
-    { action: "Donor confirmed", time: "Dec 12 · 12:44" },
-  ];
+  const request = selectedItem?.id === id ? selectedItem : null;
+
+  useAdminPageHeader({
+    title: request ? `Request (${request.reference_code})` : "Request",
+    topRight: (
+      <Btn
+        size="sm"
+        variant="outline"
+        onClick={() => router.push("/community-admin/requests")}
+      >
+        Back
+      </Btn>
+    ),
+  });
+
+  React.useEffect(() => {
+    void loadItem(id);
+  }, [id, loadItem]);
+
+  const reqId = request?.reference_code ?? "—";
+
+  // Progress computation
+  const needed = request?.donors_needed ?? 0;
+  const confirmed = request?.confirmed_count ?? 0;
+  const progressPercent =
+    needed > 0 ? Math.min(100, Math.round((confirmed / needed) * 100)) : 0;
+
+  // Escalation flag: request needs > 10 donors
+  const isHighDonor = needed > 10;
+
+  // Hospital can be an object or a string depending on backend — normalise
+  const hospitalLabel = (() => {
+    if (!request?.hospital) return "—";
+    if (typeof request.hospital === "string") return request.hospital;
+    return request.hospital?.name ?? "—";
+  })();
 
   return (
-    <Shell
-      title={`Request (${reqId})`}
-      topRight={
-        <Btn
-          size="sm"
-          variant="outline"
-          onClick={() => router.push("/community-admin/requests")}
-        >
-          Back
-        </Btn>
-      }
-    >
+    <>
       <Crumb
         path={[
           ["Community Requests", "/community-admin/requests"],
@@ -58,144 +70,247 @@ export default function RequestDetailPage({
         ]}
       />
 
-      {isHighDonor && (
-        <div className="bg-ca-amber-bg border border-amber-400/30 rounded-lg px-3.5 py-2.5 mb-3.5 flex justify-between items-center">
-          <div>
-            <span className="font-bold text-amber-400 text-[12.5px]">
-              Request Exception.
-            </span>{" "}
-            <span className="text-[12.5px] text-ca-muted">
-              This request requires more than 10 donors and needs Super Admin
-              approval.
-            </span>
-          </div>
-          <Btn
-            size="sm"
-            variant="outline"
-            onClick={() => setShowEscalationNote(true)}
-          >
-            Submit Escalation
-          </Btn>
-        </div>
-      )}
+      {isLoading && !request ? (
+        <Card className="p-4">
+          <p className="text-sm text-ca-muted">Loading request…</p>
+        </Card>
+      ) : null}
 
-      <div className="grid grid-cols-[1fr_260px] gap-3.5">
-        <div className="flex flex-col gap-3.5">
-          <Card className="p-4">
-            <div className="flex justify-between items-center mb-3.5">
-              <span className="font-bold text-[13px] text-ca-text">
-                Request Information
-              </span>
-              <SBadge status="Open" />
-            </div>
-            <div className="flex flex-col">
-              <InfoRow
-                label="Request ID"
-                value={
-                  <span className="font-mono text-ca-accent">{reqId}</span>
-                }
-              />
-              <InfoRow label="Requester" value="Amaka Okafor" />
-              <InfoRow label="Community" value={COMMUNITY} />
-              <InfoRow
-                label="Blood Type"
-                value={<span className="font-bold text-ca-red">O+</span>}
-              />
-              <InfoRow label="Donors Needed" value="4" />
-              <InfoRow
-                label="Confirmed"
-                value={<span className="text-green-400">3 / 4</span>}
-              />
-              <InfoRow label="Hospital" value="Lagos Island General Hospital" />
-              <InfoRow label="Urgency" value="High" />
-              <InfoRow label="Created" value="Dec 12, 2024 · 10:02 AM" />
-              <InfoRow
-                label="Notes"
-                value="Pre-op transfusion, surgery Dec 13"
-              />
-            </div>
-          </Card>
+      {error ? (
+        <Card className="p-4">
+          <p role="alert" className="text-sm text-red-400">
+            {error}
+          </p>
+        </Card>
+      ) : null}
 
-          {/* Donor progress */}
-          <Card>
-            <div className="px-4 py-[11px] border-b border-ca-border">
-              <span className="font-bold text-[13px] text-ca-text">
-                Donor Progress — 3 of 4 confirmed
-              </span>
-            </div>
-            {/* Progress bar */}
-            <div className="px-4 py-[12px] border-b border-ca-border">
-              <div className="h-1.5 bg-ca-side rounded-full overflow-hidden">
-                <div className="h-full w-3/4 bg-green-400 rounded-full" />
+      {!isLoading && !error && !request ? (
+        <Card className="p-4">
+          <p className="text-sm text-ca-muted">
+            Request not found or you do not have access to it.
+          </p>
+        </Card>
+      ) : null}
+
+      {request && (
+        <>
+          {isHighDonor && (
+            <div className="bg-ca-amber-bg border border-amber-400/30 rounded-lg px-3.5 py-2.5 mb-3.5 flex justify-between items-center">
+              <div>
+                <span className="font-bold text-amber-400 text-[12.5px]">
+                  Request Exception.
+                </span>{" "}
+                <span className="text-[12.5px] text-ca-muted">
+                  This request requires more than 10 donors and needs Super
+                  Admin approval.
+                </span>
               </div>
-            </div>
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-ca-side">
-                  <TH>Slot</TH>
-                  <TH>Status</TH>
-                  <TH>Confirmed</TH>
-                </tr>
-              </thead>
-              <tbody>
-                {slots.map((d) => (
-                  <tr
-                    key={d.slot}
-                    className="border-b border-ca-border/20 last:border-0 hover:bg-ca-border/5"
-                  >
-                    <TD muted>Slot {d.slot}</TD>
-                    <TD>
-                      <SBadge status={d.status} />
-                    </TD>
-                    <TD muted>{d.time}</TD>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Card>
-        </div>
-
-        {/* Right column */}
-        <div className="flex flex-col gap-3.5">
-          <Card className="p-[14px]">
-            <SectionLabel>Requester</SectionLabel>
-            <div className="font-semibold text-ca-text mb-1">Amaka Okafor</div>
-            <div className="text-[11.5px] text-ca-muted mb-2.5">
-              Active Member · {COMMUNITY}
-            </div>
-            <Btn
-              size="sm"
-              variant="outline"
-              onClick={() =>
-                router.push("/community-admin/members/Amaka%20Okafor")
-              }
-            >
-              View Member
-            </Btn>
-          </Card>
-
-          <Card>
-            <div className="px-4 py-[11px] border-b border-ca-border">
-              <span className="font-bold text-[12px] text-ca-text">
-                Activity
-              </span>
-            </div>
-            {audit.map((a, i) => (
-              <div
-                key={i}
-                className={`px-4 py-[9px] ${i < audit.length - 1 ? "border-b border-ca-border/10" : ""}`}
+              <Btn
+                size="sm"
+                variant="outline"
+                onClick={() => setShowEscalationNote(true)}
               >
-                <div className="text-[12px] font-medium text-ca-text">
-                  {a.action}
+                Submit Escalation
+              </Btn>
+            </div>
+          )}
+
+          <div className="grid grid-cols-[1fr_260px] gap-3.5">
+            <div className="flex flex-col gap-3.5">
+              <Card className="p-4">
+                <div className="flex justify-between items-center mb-3.5">
+                  <span className="font-bold text-[13px] text-ca-text">
+                    Request Information
+                  </span>
+                  <SBadge status={request.status} />
                 </div>
-                <div className="text-[10.5px] text-ca-muted mt-0.5">
-                  {a.time}
+                <div className="flex flex-col">
+                  <InfoRow
+                    label="Request ID"
+                    value={
+                      <span className="font-mono text-ca-accent">
+                        {request.reference_code}
+                      </span>
+                    }
+                  />
+                  <InfoRow
+                    label="Requester"
+                    value={request.requester.full_name}
+                  />
+                  <InfoRow
+                    label="Blood Type"
+                    value={
+                      <span className="font-bold text-ca-red">
+                        {request.blood_type_needed}
+                      </span>
+                    }
+                  />
+                  <InfoRow
+                    label="Donors Needed"
+                    value={String(request.donors_needed)}
+                  />
+                  <InfoRow
+                    label="Accepted"
+                    value={String(request.accepted_count)}
+                  />
+                  <InfoRow
+                    label="Confirmed"
+                    value={
+                      <span className="text-green-400">
+                        {request.confirmed_count} / {request.donors_needed}
+                      </span>
+                    }
+                  />
+                  <InfoRow
+                    label="Donors Left"
+                    value={String(request.donors_left)}
+                  />
+                  <InfoRow label="Hospital" value={hospitalLabel} />
+                  <InfoRow label="Urgency" value={request.urgency} />
+                  <InfoRow
+                    label="Created"
+                    value={new Date(request.created_at).toLocaleString()}
+                  />
+                  <InfoRow
+                    label="Expires"
+                    value={new Date(request.expires_at).toLocaleString()}
+                  />
+                  {request.closed_at ? (
+                    <InfoRow
+                      label="Closed"
+                      value={new Date(request.closed_at).toLocaleString()}
+                    />
+                  ) : null}
+                  {request.notes ? (
+                    <InfoRow label="Notes" value={request.notes} />
+                  ) : null}
                 </div>
-              </div>
-            ))}
-          </Card>
-        </div>
-      </div>
+              </Card>
+
+              {/* Donor progress */}
+              <Card>
+                <div className="px-4 py-[11px] border-b border-ca-border">
+                  <span className="font-bold text-[13px] text-ca-text">
+                    Donor Progress — {request.confirmed_count} of{" "}
+                    {request.donors_needed} confirmed
+                  </span>
+                </div>
+                <div className="px-4 py-[12px] border-b border-ca-border">
+                  <div className="h-1.5 bg-ca-side rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-green-400 rounded-full transition-all"
+                      style={{ width: `${progressPercent}%` }}
+                    />
+                  </div>
+                </div>
+
+                {request.acceptance_activity.length > 0 ? (
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-ca-side">
+                        <TH>#</TH>
+                        <TH>Status</TH>
+                        <TH>Accepted</TH>
+                        <TH>Confirmed</TH>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {request.acceptance_activity.map((entry, index) => (
+                        <tr
+                          key={index}
+                          className="border-b border-ca-border/20 last:border-0 hover:bg-ca-border/5"
+                        >
+                          <TD muted>
+                            <span className="font-mono text-[11.5px]">
+                              #{index + 1}
+                            </span>
+                          </TD>
+                          <TD>
+                            <SBadge status={entry.status} />
+                          </TD>
+                          <TD muted>
+                            {entry.accepted_at
+                              ? new Date(entry.accepted_at).toLocaleString()
+                              : "—"}
+                          </TD>
+                          <TD muted>
+                            {entry.confirmed_at
+                              ? new Date(entry.confirmed_at).toLocaleString()
+                              : "—"}
+                          </TD>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p className="px-4 py-4 text-sm text-ca-muted">
+                    No donor acceptances yet.
+                  </p>
+                )}
+              </Card>
+            </div>
+
+            {/* Right column */}
+            <div className="flex flex-col gap-3.5">
+              <Card className="p-[14px]">
+                <SectionLabel>Requester</SectionLabel>
+                <div className="font-semibold text-ca-text mb-1">
+                  {request.requester.full_name}
+                </div>
+                {request.requester.phone ? (
+                  <div className="text-[11.5px] text-ca-muted mb-2.5">
+                    {request.requester.phone}
+                  </div>
+                ) : null}
+                <Btn
+                  size="sm"
+                  variant="outline"
+                  onClick={() =>
+                    router.push(
+                      `/community-admin/members/${encodeURIComponent(request.requester.id)}`,
+                    )
+                  }
+                >
+                  View Member
+                </Btn>
+              </Card>
+
+              <Card>
+                <div className="px-4 py-[11px] border-b border-ca-border">
+                  <span className="font-bold text-[12px] text-ca-text">
+                    Activity
+                  </span>
+                </div>
+                <div className="px-4 py-[9px] border-b border-ca-border/10">
+                  <div className="text-[12px] font-medium text-ca-text">
+                    Request created
+                  </div>
+                  <div className="text-[10.5px] text-ca-muted mt-0.5">
+                    {new Date(request.created_at).toLocaleString()}
+                  </div>
+                </div>
+                {request.acceptance_activity.map((entry, index) => (
+                  <div
+                    key={index}
+                    className="px-4 py-[9px] border-b border-ca-border/10 last:border-0"
+                  >
+                    <div className="text-[12px] font-medium text-ca-text">
+                      Donor {entry.status.toLowerCase()}
+                    </div>
+                    <div className="text-[10.5px] text-ca-muted mt-0.5">
+                      {entry.confirmed_at
+                        ? new Date(entry.confirmed_at).toLocaleString()
+                        : entry.accepted_at
+                          ? new Date(entry.accepted_at).toLocaleString()
+                          : "—"}
+                    </div>
+                  </div>
+                ))}
+              </Card>
+            </div>
+          </div>
+        </>
+      )}
 
       {showEscalationNote && (
         <Modal onClose={() => setShowEscalationNote(false)}>
@@ -228,6 +343,6 @@ export default function RequestDetailPage({
           </Card>
         </Modal>
       )}
-    </Shell>
+    </>
   );
 }

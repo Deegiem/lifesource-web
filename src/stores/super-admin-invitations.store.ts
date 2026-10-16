@@ -2,6 +2,7 @@ import { create } from "zustand";
 import {
   createCommunityAdminInvitation,
   getCommunityAdminInvitations,
+  revokeCommunityAdminInvitation,
 } from "@/services/super-admin-invitations.service";
 import type {
   CommunityAdminInvitation,
@@ -15,6 +16,7 @@ interface State {
   error: string | null;
   loadInvitations: () => Promise<void>;
   sendInvitation: (input: CreateCommunityAdminInvitationInput) => Promise<void>;
+  revokeInvitation: (id: string) => Promise<void>;
 }
 
 export const useSuperAdminInvitationsStore = create<State>((set) => ({
@@ -28,8 +30,8 @@ export const useSuperAdminInvitationsStore = create<State>((set) => ({
     try {
       const invitations = await getCommunityAdminInvitations();
       set({ invitations, isLoading: false });
-    } catch {
-      set({ isLoading: false, error: "Unable to load invitations." });
+    } catch (error) {
+      set({ isLoading: false, error: error instanceof Error ? error.message : "Unable to load invitations." });
     }
   },
 
@@ -41,9 +43,25 @@ export const useSuperAdminInvitationsStore = create<State>((set) => ({
         invitations: [invitation, ...state.invitations],
         isSubmitting: false,
       }));
-    } catch {
-      set({ isSubmitting: false, error: "Unable to send invitation." });
-      throw new Error("Unable to send invitation.");
+    } catch (error) {
+      set({ isSubmitting: false, error: error instanceof Error ? error.message : "Unable to send invitation." });
+      throw error;
+    }
+  },
+
+  revokeInvitation: async (id) => {
+    set({ isSubmitting: true, error: null });
+    try {
+      await revokeCommunityAdminInvitation(id);
+      set((state) => ({
+        invitations: state.invitations.map((invite) =>
+          invite.id === id ? { ...invite, status: "revoked" as const } : invite,
+        ),
+        isSubmitting: false,
+      }));
+    } catch (error) {
+      set({ isSubmitting: false, error: error instanceof Error ? error.message : "Unable to revoke invitation." });
+      throw error;
     }
   },
 }));

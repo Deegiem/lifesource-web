@@ -13,6 +13,8 @@ export interface DonorOnboardingState {
 
   state: string;
   lga: string;
+  stateId: string;
+  lgaId: string;
 
   availability: DonorAvailability;
 
@@ -25,7 +27,7 @@ export interface DonorOnboardingState {
 
   setGpsLocation: (latitude: number, longitude: number) => void;
 
-  setManualLocation: (state: string, lga: string) => void;
+  setManualLocation: (state: string, lga: string, stateId: string, lgaId: string) => void;
 
   setAvailability: (availability: DonorAvailability) => void;
 
@@ -43,6 +45,8 @@ const initialState = {
 
   state: "",
   lga: "",
+  stateId: "",
+  lgaId: "",
 
   availability: "" as DonorAvailability,
 };
@@ -69,13 +73,13 @@ export const useDonorOnboardingStore = create<DonorOnboardingState>(
         longitude,
       }),
 
-    setManualLocation: (state, lga) =>
+    setManualLocation: (state, lga, stateId, lgaId) =>
       set({
         locationMethod: "manual",
-        latitude: null,
-        longitude: null,
         state,
         lga,
+        stateId,
+        lgaId,
       }),
 
     setAvailability: (availability) =>

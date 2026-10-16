@@ -35,7 +35,7 @@ export default function AdminInvitation() {
                 Admin invitation
               </Badge>
               <h1 className="text-2xl font-extrabold text-[#0D1B2A] leading-tight">
-                You've been invited as a
+                You&apos;ve been invited as a
               </h1>
               <p className="text-2xl font-extrabold leading-tight text-[#4F46E5]">
                 Community Admin

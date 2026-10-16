@@ -43,7 +43,7 @@ export default function LocationPermissionPage() {
         );
 
         setRequesting(false);
-        router.push("/donor-availability");
+        router.push("/manual-location");
       },
       () => {
         setRequesting(false);

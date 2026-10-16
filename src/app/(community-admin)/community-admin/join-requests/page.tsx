@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Shell } from "@/components/community-admin/shell";
 import { Card } from "@/components/community-admin/ui/ca-card";
 import { FilterRow } from "@/components/community-admin/ui/ca-filter-row";
 import { SearchInput } from "@/components/community-admin/ui/ca-search-input";
@@ -11,38 +10,68 @@ import { TH, TD, TableRow } from "@/components/community-admin/ui/ca-table";
 import { SBadge } from "@/components/community-admin/ui/ca-badge";
 import { Btn } from "@/components/community-admin/ui/ca-button";
 import { Pagination } from "@/components/community-admin/ui/ca-pagination";
-import { useCAJoinRequestsStore } from "@/stores/community-admin-join-requests.store";
-import { COMMUNITY } from "@/components/community-admin/ui/ca-constants";
 import { Modal } from "@/components/community-admin/ui/ca-modal";
+import { useAdminPageHeader } from "@/components/admin/layout/admin-shell";
+import { useCAJoinRequestsStore } from "@/stores/community-admin-join-requests.store";
+import { apiService } from "@/services/api.service";
+import type { CommunityMeResponse } from "@/features/api/types";
 
 export default function JoinRequestsPage() {
   const router = useRouter();
+  const [community, setCommunity] = React.useState<CommunityMeResponse | null>(null);
 
-  const { items: rows,loadItems, updateItemStatus } = useCAJoinRequestsStore();
+  const {
+    items: rows,
+    isLoading,
+    error,
+    loadItems,
+    updateItemStatus,
+  } = useCAJoinRequestsStore();
+
+  useAdminPageHeader({ title: "Join Requests" });
 
   React.useEffect(() => {
-    loadItems();
+    void loadItems();
+    void apiService.getMyCommunity().then(setCommunity).catch(() => {});
   }, [loadItems]);
 
   const [modal, setModal] = React.useState<{
     type: "approve" | "reject";
+    id: string;
     name: string;
   } | null>(null);
 
-  const confirmAction = () => {
+  const confirmAction = async () => {
     if (!modal) return;
-    updateItemStatus(modal.name, modal.type === "approve" ? "Approved" : "Rejected");
-    setModal(null);
+    try {
+      await updateItemStatus(
+        modal.id,
+        modal.type === "approve" ? "Approved" : "Rejected",
+      );
+      setModal(null);
+    } catch {
+      /* Error is surfaced from the store below. */
+    }
   };
 
+  const communityName = community?.name ?? "your community";
+
   return (
-    <Shell title={`Join Requests (${COMMUNITY})`}>
+    <>
       <FilterRow>
         <SearchInput placeholder="Search applicants..." />
         <Sel opts={["All Statuses", "Pending", "Approved", "Rejected"]} />
       </FilterRow>
 
       <Card>
+        {error ? (
+          <p role="alert" className="p-4 text-sm text-red-400">
+            {error}
+          </p>
+        ) : null}
+        {isLoading && rows.length === 0 ? (
+          <p className="p-4 text-sm text-ca-muted">Loading join requests…</p>
+        ) : null}
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-ca-side">
@@ -56,10 +85,10 @@ export default function JoinRequestsPage() {
           </thead>
           <tbody>
             {rows.map((r) => {
-              const urlSafeId = encodeURIComponent(r.name);
+              const urlSafeId = encodeURIComponent(r.id);
               return (
                 <TableRow
-                  key={r.name}
+                  key={r.id}
                   href={`/community-admin/join-requests/${urlSafeId}`}
                 >
                   <TD>
@@ -92,7 +121,11 @@ export default function JoinRequestsPage() {
                             variant="outline"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setModal({ type: "approve", name: r.name });
+                              setModal({
+                                type: "approve",
+                                id: r.id,
+                                name: r.name,
+                              });
                             }}
                           >
                             Approve
@@ -102,7 +135,11 @@ export default function JoinRequestsPage() {
                             variant="danger"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setModal({ type: "reject", name: r.name });
+                              setModal({
+                                type: "reject",
+                                id: r.id,
+                                name: r.name,
+                              });
                             }}
                           >
                             Reject
@@ -116,7 +153,7 @@ export default function JoinRequestsPage() {
             })}
           </tbody>
         </table>
-        <Pagination showing={6} total="6 requests" />
+        <Pagination showing={rows.length} total={`${rows.length} requests`} />
       </Card>
 
       {modal && (
@@ -129,8 +166,8 @@ export default function JoinRequestsPage() {
             </div>
             <p className="text-[12.5px] text-ca-muted leading-relaxed mb-[18px]">
               {modal.type === "approve"
-                ? `${modal.name} will become an active member of ${COMMUNITY} and can create blood requests.`
-                : `${modal.name}'s request to join ${COMMUNITY} will be rejected. They can reapply.`}
+                ? `${modal.name} will become an active member of ${communityName} and can create blood requests.`
+                : `${modal.name}'s request to join ${communityName} will be rejected. They can reapply.`}
             </p>
             <div className="flex gap-2 justify-end">
               <Btn variant="outline" onClick={() => setModal(null)}>
@@ -138,7 +175,7 @@ export default function JoinRequestsPage() {
               </Btn>
               <Btn
                 variant={modal.type === "approve" ? "primary" : "danger"}
-                onClick={confirmAction}
+                onClick={() => void confirmAction()}
               >
                 {modal.type === "approve" ? "Approve" : "Reject"}
               </Btn>
@@ -146,6 +183,6 @@ export default function JoinRequestsPage() {
           </Card>
         </Modal>
       )}
-    </Shell>
+    </>
   );
 }

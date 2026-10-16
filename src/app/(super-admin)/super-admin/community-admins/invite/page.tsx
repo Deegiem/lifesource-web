@@ -1,37 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { ArrowLeft, Send } from "lucide-react";
 import { AdminCard } from "@/components/super-admin/ui/admin-card";
 import { AdminErrorState } from "@/components/super-admin/ui/admin-error-state";
-import { AdminFilter } from "@/components/super-admin/ui/admin-filter";
 import { AdminPageHeader } from "@/components/super-admin/ui/admin-page-header";
-import { useSuperAdminCommunitiesStore } from "@/stores/super-admin-communities.store";
 import { useSuperAdminInvitationsStore } from "@/stores/super-admin-invitations.store";
 
 export default function InviteCommunityAdminPage() {
-  const { communities, loadCommunities } = useSuperAdminCommunitiesStore();
   const { sendInvitation, isSubmitting, error } = useSuperAdminInvitationsStore();
-  const [communityId, setCommunityId] = useState("");
+  const [communityName, setCommunityName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => { void loadCommunities(); }, [loadCommunities]);
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitted(false);
-    if (!communityId || !name.trim() || !email.trim()) return;
+    if (!communityName.trim() || !name.trim() || !email.trim()) return;
     try {
-      await sendInvitation({ communityId, name: name.trim(), email: email.trim() });
+      await sendInvitation({ communityId: communityName.trim(), name: name.trim(), email: email.trim() });
       setSubmitted(true);
       setName("");
       setEmail("");
-    } catch {
-      setSubmitted(false);
-    }
+    } catch { setSubmitted(false); }
   }
 
   return (
@@ -51,11 +44,8 @@ export default function InviteCommunityAdminPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <label className="block space-y-2">
-              <span className="text-sm font-semibold">Community</span>
-              <AdminFilter value={communityId} onChange={(event) => setCommunityId(event.target.value)} required className="w-full">
-                <option value="">Select a community</option>
-                {communities.map((community) => <option key={community.id} value={community.id}>{community.name}</option>)}
-              </AdminFilter>
+              <span className="text-sm font-semibold">Community name</span>
+              <input type="text" value={communityName} onChange={(event) => setCommunityName(event.target.value)} required placeholder="Community name" className="h-(--control-height-lg) w-full rounded-(--radius-lg) border border-(--color-admin-border) bg-(--color-admin-card) px-4 text-sm text-(--color-admin-text) outline-none placeholder:text-(--color-admin-muted) focus:border-(--color-admin-accent) focus:ring-2 focus:ring-(--color-admin-accent-soft)" />
             </label>
 
             <label className="block space-y-2">

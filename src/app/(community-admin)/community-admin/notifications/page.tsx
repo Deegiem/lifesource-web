@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Shell } from "@/components/community-admin/shell";
+import { useAdminPageHeader } from "@/components/admin/layout/admin-shell";
 import { Card } from "@/components/community-admin/ui/ca-card";
 import { Btn } from "@/components/community-admin/ui/ca-button";
 import { useCANotificationsStore } from "@/stores/community-admin-notifications.store";
@@ -10,43 +10,60 @@ import { cn } from "@/lib/utils";
 
 export default function CANotificationsPage() {
   const router = useRouter();
-  const { items, isLoading, loadItems, markAllRead, markRead } =
+  const { items, isLoading, error, loadItems, markAllRead, markRead } =
     useCANotificationsStore();
-
-  useEffect(() => {
-    loadItems();
-  }, [loadItems]);
 
   const unreadCount = items.filter((n) => !n.read).length;
 
-  const handleNotificationClick = (id: number, dest: string) => {
-    markRead(id);
-    router.push(`/community-admin/${dest.replace("ca-", "")}`);
+  useAdminPageHeader({
+    title: "Notifications",
+    topRight:
+      unreadCount > 0 ? (
+        <Btn size="sm" variant="ghost" onClick={markAllRead}>
+          Mark all read
+        </Btn>
+      ) : undefined,
+  });
+
+  useEffect(() => {
+    void loadItems();
+  }, [loadItems]);
+
+  const handleClick = (key: string, href: string) => {
+    markRead(key);
+    router.push(href);
   };
 
   return (
-    <Shell
-      title="Notifications"
-      topRight={
-        unreadCount > 0 ? (
-          <Btn size="sm" variant="ghost" onClick={markAllRead}>
-            Mark all read
-          </Btn>
-        ) : undefined
-      }
-    >
+    <>
       <div className="max-w-xl">
+        {error ? (
+          <div
+            role="alert"
+            className="mb-3 rounded-lg border border-red-400/30 bg-ca-red-bg p-3 text-sm text-red-400"
+          >
+            {error}
+          </div>
+        ) : null}
+
         {unreadCount > 0 && (
           <div className="text-xs text-ca-muted mb-2.5">
             {unreadCount} unread notification{unreadCount !== 1 ? "s" : ""}
           </div>
         )}
+
         <Card>
           <div className="flex flex-col">
+            {isLoading && items.length === 0 ? (
+              <div className="p-8 text-center text-sm text-ca-muted">
+                Loading notifications…
+              </div>
+            ) : null}
+
             {items.map((n) => (
               <div
-                key={n.id}
-                onClick={() => handleNotificationClick(n.id, n.dest)}
+                key={n.key}
+                onClick={() => handleClick(n.key, n.href)}
                 className={cn(
                   "flex gap-3 py-3 px-4 border-b border-ca-border/10 last:border-0 cursor-pointer transition-colors",
                   n.read
@@ -54,17 +71,6 @@ export default function CANotificationsPage() {
                     : "bg-blue-950/20 hover:bg-blue-950/30",
                 )}
               >
-                <div
-                  className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0",
-                    n.read
-                      ? "bg-ca-side"
-                      : "bg-emerald-950 border border-ca-border",
-                  )}
-                >
-                  {n.icon}
-                </div>
-
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start gap-2.5">
                     <div
@@ -95,7 +101,7 @@ export default function CANotificationsPage() {
               </div>
             ))}
 
-            {items.length === 0 && !isLoading && (
+            {items.length === 0 && !isLoading && !error && (
               <div className="p-8 text-center text-sm text-ca-muted">
                 No notifications right now.
               </div>
@@ -103,6 +109,6 @@ export default function CANotificationsPage() {
           </div>
         </Card>
       </div>
-    </Shell>
+    </>
   );
 }

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Field } from "@/components/donor-onboarding/field";
 import { OnboardingLayout } from "@/components/donor-onboarding/onboarding-layout";
 import { TrustNote } from "@/components/donor-onboarding/trust-note";
 import { useDonorOnboardingStore } from "@/stores/donor-onboarding.store";
+import { useAuthSessionStore } from "@/stores/auth-session.store";
 
 export default function DonorProfilePage() {
   const router = useRouter();
@@ -17,21 +18,42 @@ export default function DonorProfilePage() {
     setProfile,
   } = useDonorOnboardingStore();
 
+  const { session, loadSession } = useAuthSessionStore();
+
   const [fullName, setFullName] = useState(savedFullName);
   const [genotype, setGenotype] = useState(savedGenotype);
   const [error, setError] = useState("");
 
-  const genotypes = [
-    "AA",
-    "AS",
-    "AC",
-    "SS",
-    "SC",
-  ];
+  const genotypes = ["AA", "AS", "AC", "SS", "SC"];
+
+  // Load the auth session once, only if we don't already have a saved name.
+  // This avoids an unnecessary network call if the user is coming back.
+  useEffect(() => {
+    if (!savedFullName) {
+      void loadSession();
+    }
+  }, [savedFullName, loadSession]);
+
+  // When the session arrives, prefill the name field — but only if the user
+  // hasn't already typed something or previously saved a name.
+  useEffect(() => {
+    if (savedFullName || fullName || !session) return;
+
+    const name = [session.first_name, session.last_name]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
+
+    if (name) setFullName(name);
+  }, [session, savedFullName, fullName]);
 
   const handleContinue = () => {
     if (!fullName.trim()) {
       setError("Enter your full name.");
+      return;
+    }
+    if (!genotype) {
+      setError("Select your genotype to continue.");
       return;
     }
 
@@ -76,7 +98,7 @@ export default function DonorProfilePage() {
               </label>
 
               <span className="text-xs text-(--color-text-muted)">
-                Optional
+                Required
               </span>
             </div>
 
@@ -88,11 +110,7 @@ export default function DonorProfilePage() {
                   <button
                     key={item}
                     type="button"
-                    onClick={() =>
-                      setGenotype(
-                        selected ? "" : item,
-                      )
-                    }
+                    onClick={() => setGenotype(selected ? "" : item)}
                     className={[
                       "h-(--control-height-md) rounded-(--radius-lg) border text-sm font-semibold transition-colors",
                       selected
@@ -107,7 +125,7 @@ export default function DonorProfilePage() {
             </div>
 
             <p className="text-xs leading-normal text-(--color-text-muted)">
-              Select your genotype if you know it. This helps us match requests more accurately.
+              Select your genotype to complete your donor profile and support safe matching.
             </p>
           </div>
 
@@ -119,7 +137,8 @@ export default function DonorProfilePage() {
         <button
           type="button"
           onClick={handleContinue}
-          className="h-(--control-height-lg) w-full rounded-(--radius-lg) bg-(--color-brand-primary) text-sm font-bold text-(--color-text-inverse) transition-colors hover:bg-(--color-brand-primary-hover)"
+          disabled={!genotype}
+          className="h-(--control-height-lg) w-full rounded-(--radius-lg) bg-(--color-brand-primary) text-sm font-bold text-(--color-text-inverse) transition-colors hover:bg-(--color-brand-primary-hover) disabled:cursor-not-allowed disabled:opacity-50"
         >
           Continue
         </button>
