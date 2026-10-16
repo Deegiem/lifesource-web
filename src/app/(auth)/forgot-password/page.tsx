@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
           </div>
 
           <div className="mt-5 rounded-2xl bg-(--color-surface-subtle) p-4">
-            <p className="text-xs leading-relaxed text-(--color-text-secondary)">For security, we won't confirm if an account exists for this email.</p>
+            <p className="text-xs leading-relaxed text-(--color-text-secondary)">For security, we won&apos;t confirm if an account exists for this email.</p>
           </div>
         </div>
 

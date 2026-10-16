@@ -103,9 +103,6 @@ export default function ConfirmDonationPage() {
 
       <div className="mx-auto max-w-xl">
         <div className="mb-6">
-          <p className="text-xs font-semibold uppercase tracking-wide text-(--color-text-muted)">
-            {request.id}
-          </p>
           <h1 className="mt-1 text-2xl font-extrabold">Confirm donation</h1>
           <p className="mt-2 text-sm leading-relaxed text-(--color-text-secondary)">
             Enter the private verification code shown by the donor to confirm that the donation has taken place.

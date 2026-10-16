@@ -1,16 +1,9 @@
-
-import { CARequests } from '@/features/community-admin/requests-types';
-import { MOCK_REQUESTS } from '@/features/community-admin/requests-data';
+import type { CARequests } from '@/features/community-admin/requests-types';
 
 export const getCARequests = async (): Promise<CARequests[]> => {
-  return new Promise((resolve) => setTimeout(() => resolve(MOCK_REQUESTS), 500));
+	throw new Error('The supplied API does not include a request-list endpoint.');
 };
 
-export const getCARequestsById = async (id: string): Promise<CARequests | null> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const item = MOCK_REQUESTS.find(i => i.id === id);
-      resolve(item || null);
-    }, 500);
-  });
+export const getCARequestsById = async (_id: string): Promise<CARequests | null> => {
+	throw new Error('The supplied API does not include a request-detail endpoint.');
 };

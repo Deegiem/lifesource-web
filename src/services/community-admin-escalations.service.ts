@@ -1,19 +1,8 @@
-import { CAEscalations } from "@/features/community-admin/escalations-types";
-import { MOCK_ESCALATIONS } from "@/features/community-admin/escalations-data";
+import type { CAEscalations } from '@/features/community-admin/escalations-types';
 
 export const getCAEscalations = async (): Promise<CAEscalations[]> => {
-  return new Promise((resolve) =>
-    setTimeout(() => resolve(MOCK_ESCALATIONS), 500),
-  );
+	throw new Error('The supplied API does not include an escalation endpoint.');
 };
-
-export const getCAEscalationsById = async (
-  id: string,
-): Promise<CAEscalations | null> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const item = MOCK_ESCALATIONS.find((i) => i.id === id);
-      resolve(item || null);
-    }, 500);
-  });
+export const getCAEscalationsById = async (_id: string): Promise<CAEscalations | null> => {
+	throw new Error('The supplied API does not include an escalation detail endpoint.');
 };

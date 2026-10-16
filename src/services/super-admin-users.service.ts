@@ -1,22 +1,9 @@
-import {
-  getPlatformUserDetail,
-  platformUsers,
-} from "@/features/super-admin/user-data";
-import type {
-  PlatformUserDetail,
-  PlatformUsersResponse,
-} from "@/features/super-admin/user-types";
+import type { PlatformUserDetail, PlatformUsersResponse } from "@/features/super-admin/user-types";
 
-// Replace these fixture reads with API calls when the backend endpoint is ready.
 export async function getPlatformUsers(): Promise<PlatformUsersResponse> {
-  return {
-    users: platformUsers,
-    total: platformUsers.length,
-  };
+  throw new Error('The supplied API does not include a platform user-list endpoint.');
 }
 
-export async function getPlatformUserById(
-  userId: string
-): Promise<PlatformUserDetail | null> {
-  return getPlatformUserDetail(userId);
+export async function getPlatformUserById(_userId: string): Promise<PlatformUserDetail | null> {
+  throw new Error('The supplied API does not include a platform user-detail endpoint.');
 }

@@ -35,10 +35,10 @@ export const useSuperAdminRequestsStore =
       try {
         const requests = await superAdminRequestsService.getRequests();
         set({ requests, isLoading: false });
-      } catch {
+      } catch (error) {
         set({
           isLoading: false,
-          error: "Unable to load platform requests.",
+          error: error instanceof Error ? error.message : "Unable to load platform requests.",
         });
       }
     },
@@ -63,10 +63,10 @@ export const useSuperAdminRequestsStore =
           selectedRequest,
           isDetailLoading: false,
         });
-      } catch {
+      } catch (error) {
         set({
           isDetailLoading: false,
-          detailError: "Unable to load request details.",
+          detailError: error instanceof Error ? error.message : "Unable to load request details.",
         });
       }
     },

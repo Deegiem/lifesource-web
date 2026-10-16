@@ -12,6 +12,7 @@ import {
   ShieldAlert,
   Users,
   UsersRound,
+  ShieldCheck,
 } from "lucide-react";
 
 import { SUPER_ADMIN_NAV } from "@/features/super-admin/constants";
@@ -26,6 +27,7 @@ const icons = {
   "audit-log": FileClock,
   settings: Settings,
   notifications: Bell,
+  "account-security": ShieldCheck,
 } as const;
 
 export function AdminSidebar() {
@@ -83,6 +85,19 @@ export function AdminSidebar() {
             </Link>
           );
         })}
+        <Link
+          href="/account/security"
+          className={[
+            "mb-1 flex min-h-10 items-center gap-3 rounded-(--radius-md) px-3",
+            "text-sm font-medium transition-colors",
+            pathname === "/account/security"
+              ? "bg-(--color-admin-accent-soft) text-(--color-admin-text)"
+              : "text-(--color-admin-muted) hover:bg-(--color-admin-accent-soft) hover:text-(--color-admin-text)",
+          ].join(" ")}
+        >
+          <ShieldCheck size={17} strokeWidth={1.8} />
+          <span>Account Security</span>
+        </Link>
       </nav>
 
       <div className="shrink-0 border-t border-(--color-admin-border) p-4">

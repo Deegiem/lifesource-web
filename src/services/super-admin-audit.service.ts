@@ -1,6 +1,5 @@
-import { platformAuditLogs } from "@/features/super-admin/audit-data";
+import type { PlatformAuditLog } from '@/features/super-admin/audit-types';
 
-export async function getPlatformAuditLogs() {
-  // Replace with GET /audit-logs when the backend is ready.
-  return platformAuditLogs;
+export async function getPlatformAuditLogs(): Promise<PlatformAuditLog[]> {
+  throw new Error('The supplied API does not include a platform audit-log endpoint.');
 }

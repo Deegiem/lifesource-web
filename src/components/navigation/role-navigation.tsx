@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, type ComponentType } from "react";
 import {
   ChevronDown,
@@ -9,13 +9,17 @@ import {
   ClipboardList,
   Clock3,
   LayoutDashboard,
+  LogOut,
   Plus,
   Menu,
   X,
+  UserCircle,
   Search,
+  ShieldCheck,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { apiService } from "@/services/api.service";
 
 interface NavigationChild {
   label: string;
@@ -48,6 +52,11 @@ const standaloneByRole = {
       href: "/community/cooldown",
       icon: Clock3,
     },
+    {
+      label: "Account security",
+      href: "/account/security",
+      icon: ShieldCheck,
+    },
   ],
   donor: [
     {
@@ -59,6 +68,16 @@ const standaloneByRole = {
       label: "Cooldown",
       href: "/donor/cooldown",
       icon: Clock3,
+    },
+    {
+      label: "Account security",
+      href: "/account/security",
+      icon: ShieldCheck,
+    },
+    {
+      label: "Profile",
+      href: "/donor/profile",
+      icon: UserCircle,
     },
   ],
 } satisfies Record<"communityMember" | "donor", NavigationItem[]>;
@@ -138,6 +157,8 @@ export function RoleNavigation({
   const [openGroups, setOpenGroups] = useState<Set<string>>(activeGroupIds);
 
   useEffect(() => {
+    // This route synchronization intentionally opens the groups containing the active page.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setOpenGroups((current) => {
       const next = new Set(current);
       activeGroupIds.forEach((id) => next.add(id));
@@ -158,8 +179,8 @@ export function RoleNavigation({
   }
 
   const linkBase = mobile
-    ? "flex min-h-11 items-center rounded-(--radius-md) px-3 text-sm font-medium"
-    : "flex min-h-10 items-center rounded-(--radius-md) px-3 text-sm font-medium";
+    ? "relative flex min-h-11 items-center rounded-(--radius-md) px-3 text-sm font-medium"
+    : "relative flex min-h-10 items-center rounded-(--radius-md) px-3 text-sm font-medium";
 
   return (
     <nav className="space-y-1">
@@ -180,7 +201,15 @@ export function RoleNavigation({
                 : "text-(--color-text-secondary) hover:bg-(--color-surface-subtle) hover:text-(--color-text-primary)",
             )}
           >
-            <Icon className="size-4 shrink-0" />
+            {active ? (
+              <span
+                aria-hidden="true"
+                className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-(--color-blood)"
+              />
+            ) : null}
+            <Icon
+              className={cn("size-4 shrink-0", active && "text-(--color-blood)")}
+            />
             <span>{item.label}</span>
           </Link>
         );
@@ -205,7 +234,18 @@ export function RoleNavigation({
                   : "text-(--color-text-secondary) hover:bg-(--color-surface-subtle) hover:text-(--color-text-primary)",
               )}
             >
-              <GroupIcon className="size-4 shrink-0" />
+              {active ? (
+                <span
+                  aria-hidden="true"
+                  className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-(--color-blood)"
+                />
+              ) : null}
+              <GroupIcon
+                className={cn(
+                  "size-4 shrink-0",
+                  active && "text-(--color-blood)",
+                )}
+              />
               <span className="flex-1">{group.label}</span>
               {open ? (
                 <ChevronDown className="size-4 shrink-0" />
@@ -232,9 +272,16 @@ export function RoleNavigation({
                           : "text-(--color-text-secondary) hover:bg-(--color-surface-subtle) hover:text-(--color-text-primary)",
                       )}
                     >
-                      <span className="size-1.5 shrink-0 rounded-full bg-current opacity-50" />
+                      <span
+                        className={cn(
+                          "size-1.5 shrink-0 rounded-full",
+                          childActive ? "bg-(--color-blood)" : "bg-current opacity-50",
+                        )}
+                      />
                       <span className="flex-1">{child.label}</span>
-                      {ChildIcon ? <ChildIcon className="size-3.5 shrink-0" /> : null}
+                      {ChildIcon ? (
+                        <ChildIcon className="size-3.5 shrink-0" />
+                      ) : null}
                     </Link>
                   );
                 })}
@@ -256,12 +303,18 @@ interface RoleDashboardShellProps {
   children: React.ReactNode;
 }
 
-export function RoleDashboardShell({ role, children }: RoleDashboardShellProps) {
+export function RoleDashboardShell({
+  role,
+  children,
+}: RoleDashboardShellProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   // Close drawer whenever the route changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMobileOpen(false);
   }, [pathname]);
 
@@ -286,12 +339,67 @@ export function RoleDashboardShell({ role, children }: RoleDashboardShellProps) 
     return () => window.removeEventListener("keydown", handler);
   }, [mobileOpen]);
 
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await apiService.logout();
+    } catch {
+      // Even if the API call fails, redirect to clear the client session
+    } finally {
+      router.replace("/login");
+    }
+  };
+
+  const renderUserFooter = () => (
+    <div className="shrink-0 border-t border-(--color-border-subtle) p-3">
+      <div className="mb-3 h-px w-full bg-gradient-to-r from-(--color-blood)/60 via-(--color-blood)/20 to-transparent" />
+
+      <div className="flex items-center gap-2.5 rounded-(--radius-md) p-1.5">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-(--color-blood-soft) text-xs font-extrabold text-(--color-blood)">
+          {role === "donor" ? "DN" : "CM"}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-(--color-text-primary)">
+            {role === "donor" ? "Donor" : "Community member"}
+          </p>
+          <p className="truncate text-xs text-(--color-text-muted)">
+            LIFESOURCE
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => void handleLogout()}
+        disabled={loggingOut}
+        className="mt-3 flex w-full items-center justify-center gap-2 rounded-(--radius-md) border border-(--color-blood)/25 bg-(--color-blood-soft) px-3 py-2 text-xs font-bold text-(--color-blood) transition-colors hover:border-(--color-blood)/50 hover:bg-(--color-blood) hover:text-white disabled:opacity-50"
+      >
+        <LogOut size={14} />
+        {loggingOut ? "Logging out…" : "Log out"}
+      </button>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-(--color-surface-page)">
       {/* ---------- Desktop sidebar ---------- */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-(--color-border-subtle) bg-(--color-surface-card) lg:flex lg:flex-col">
-        <div className="flex h-16 items-center border-b border-(--color-border-subtle) px-6">
-          <span className="font-(--font-heading) text-lg font-extrabold tracking-tight text-(--color-brand-primary)">
+        <div className="flex h-16 items-center gap-2.5 border-b border-(--color-border-subtle) px-6">
+          {/* Red brand mark */}
+          <div className="flex size-8 items-center justify-center rounded-lg bg-(--color-blood) shadow-sm shadow-(--color-blood)/30">
+            <svg
+              viewBox="0 0 48 48"
+              fill="none"
+              className="size-4 text-white"
+              aria-hidden="true"
+            >
+              <path
+                d="M24 5S11 19.2 11 29.2C11 36.9 16.8 43 24 43s13-6.1 13-13.8C37 19.2 24 5 24 5Z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+          <span className="font-(--font-heading) text-base font-extrabold tracking-tight text-(--color-brand-primary)">
             LIFESOURCE
           </span>
         </div>
@@ -299,6 +407,8 @@ export function RoleDashboardShell({ role, children }: RoleDashboardShellProps) 
         <div className="flex-1 overflow-y-auto p-4">
           <RoleNavigation role={role} />
         </div>
+
+        {renderUserFooter()}
       </aside>
 
       {/* ---------- Mobile drawer overlay ---------- */}
@@ -319,9 +429,24 @@ export function RoleDashboardShell({ role, children }: RoleDashboardShellProps) 
         aria-hidden={!mobileOpen}
       >
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-(--color-border-subtle) px-5">
-          <span className="font-(--font-heading) text-lg font-extrabold tracking-tight text-(--color-brand-primary)">
-            LIFESOURCE
-          </span>
+          <div className="flex items-center gap-2.5">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-(--color-blood)">
+              <svg
+                viewBox="0 0 48 48"
+                fill="none"
+                className="size-4 text-white"
+                aria-hidden="true"
+              >
+                <path
+                  d="M24 5S11 19.2 11 29.2C11 36.9 16.8 43 24 43s13-6.1 13-13.8C37 19.2 24 5 24 5Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+            <span className="font-(--font-heading) text-base font-extrabold tracking-tight text-(--color-brand-primary)">
+              LIFESOURCE
+            </span>
+          </div>
 
           <button
             type="button"
@@ -340,6 +465,8 @@ export function RoleDashboardShell({ role, children }: RoleDashboardShellProps) 
             onNavigate={() => setMobileOpen(false)}
           />
         </div>
+
+        {renderUserFooter()}
       </aside>
 
       {/* ---------- Main content ---------- */}
@@ -358,6 +485,18 @@ export function RoleDashboardShell({ role, children }: RoleDashboardShellProps) 
           <span className="font-(--font-heading) text-sm font-extrabold tracking-tight text-(--color-brand-primary)">
             LIFESOURCE
           </span>
+
+          {/* Mobile-only logout */}
+          <button
+            type="button"
+            onClick={() => void handleLogout()}
+            disabled={loggingOut}
+            aria-label="Log out"
+            title="Log out"
+            className="ml-auto flex size-9 items-center justify-center rounded-(--radius-md) text-(--color-text-muted) transition-colors hover:bg-(--color-blood-soft) hover:text-(--color-blood) disabled:opacity-50"
+          >
+            <LogOut className="size-5" />
+          </button>
         </header>
 
         <main className="min-h-screen p-5 sm:p-8 lg:p-10">{children}</main>

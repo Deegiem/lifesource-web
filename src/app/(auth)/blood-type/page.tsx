@@ -76,7 +76,7 @@ export default function BloodTypePage() {
             className="flex w-full items-center justify-between px-4 py-4 text-left"
           >
             <span className="text-sm font-semibold text-(--color-brand-primary)">
-              I don't know my blood type
+              I don&apos;t know my blood type
             </span>
 
             <ChevronRight
@@ -100,7 +100,7 @@ export default function BloodTypePage() {
                     A previous blood test or hospital result
                   </li>
                   <li>
-                    Your National ID, driver's licence, or health card
+                    Your National ID, driver&apos;s licence, or health card
                   </li>
                   <li>
                     A blood group test at any hospital or clinic

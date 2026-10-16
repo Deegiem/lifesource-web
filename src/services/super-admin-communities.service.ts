@@ -1,22 +1,9 @@
-import {
-  getPlatformCommunityDetail,
-  platformCommunities,
-} from "@/features/super-admin/community-data";
-import type {
-  PlatformCommunitiesResponse,
-  PlatformCommunityDetail,
-} from "@/features/super-admin/community-types";
+import type { PlatformCommunitiesResponse, PlatformCommunityDetail } from '@/features/super-admin/community-types';
 
-// Replace fixture reads with API calls when the backend endpoint is ready.
 export async function getPlatformCommunities(): Promise<PlatformCommunitiesResponse> {
-  return {
-    communities: platformCommunities,
-    total: platformCommunities.length,
-  };
+  throw new Error('The supplied API does not include a platform community-list endpoint.');
 }
 
-export async function getPlatformCommunityById(
-  communityId: string
-): Promise<PlatformCommunityDetail | null> {
-  return getPlatformCommunityDetail(communityId);
+export async function getPlatformCommunityById(_communityId: string): Promise<PlatformCommunityDetail | null> {
+  throw new Error('The supplied API does not include a platform community-detail endpoint.');
 }

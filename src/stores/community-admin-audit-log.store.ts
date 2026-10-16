@@ -11,6 +11,6 @@ export const useCAAuditLogStore = create<CAAuditLogState>((set) => ({
   loadItems: async () => {
     set({ isLoading: true, error: null });
     try { const items = await getCAAuditLogs(); set({ items, isLoading: false }); }
-    catch { set({ error: 'Failed', isLoading: false }); }
+    catch (error) { set({ error: error instanceof Error ? error.message : 'Failed', isLoading: false }); }
   }
 }));

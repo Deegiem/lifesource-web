@@ -4,7 +4,7 @@ interface SelectFieldProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  options: string[];
+  options: Array<string | { value: string; label: string }>;
   placeholder: string;
   disabled?: boolean;
   required?: boolean;
@@ -40,14 +40,18 @@ export function SelectField({
           {placeholder}
         </option>
 
-        {options.map((option) => (
+        {options.map((option) => {
+          const optionValue = typeof option === "string" ? option : option.value;
+          const optionLabel = typeof option === "string" ? option : option.label;
+          return (
           <option
-            key={option}
-            value={option}
+            key={optionValue}
+            value={optionValue}
           >
-            {option}
+            {optionLabel}
           </option>
-        ))}
+          );
+        })}
       </select>
     </div>
   );

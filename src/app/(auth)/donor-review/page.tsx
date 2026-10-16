@@ -2,9 +2,12 @@
 
 import { Check, Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { OnboardingLayout } from "@/components/donor-onboarding/onboarding-layout";
 import { useDonorOnboardingStore } from "@/stores/donor-onboarding.store";
+import { apiService } from "@/services/api.service";
+import { getApiErrorMessage } from "@/lib/axios";
 
 export default function DonorReviewPage() {
   const router = useRouter();
@@ -15,8 +18,14 @@ export default function DonorReviewPage() {
     bloodType,
     state,
     lga,
+    stateId,
+    lgaId,
+    latitude,
+    longitude,
     availability,
   } = useDonorOnboardingStore();
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const details = [
     {
@@ -62,12 +71,22 @@ export default function DonorReviewPage() {
   ];
 
   const handleConfirm = () => {
-    /*
-     * Screen 16 only completes the onboarding flow here.
-     *
-     * Backend integration will persist the donor profile.
-     */
-    router.push("/donor-success");
+    if (!bloodType || !genotype || !stateId || !lgaId || saving) {
+      setError("Complete your blood type, genotype, state and LGA before continuing.");
+      return;
+    }
+    setSaving(true);
+    setError("");
+    void apiService.createDonorProfile({
+      blood_type: bloodType as "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-",
+      genotype: genotype as "AA" | "AS" | "AC" | "SS" | "SC",
+      state_id: stateId,
+      lga_id: lgaId,
+      latitude,
+      longitude,
+    }).then(() => router.push("/donor-success")).catch((requestError: unknown) => {
+      setError(getApiErrorMessage(requestError, "Unable to save your donor profile."));
+    }).finally(() => setSaving(false));
   };
 
   return (
@@ -101,7 +120,7 @@ export default function DonorReviewPage() {
 
                 <p
                   className={[
-                    "mt-1 break-words text-base font-bold",
+                    "mt-1 wrap-break-word text-base font-bold",
                     detail.emphasis === "blood"
                       ? "text-(--color-blood)"
                       : detail.emphasis === "success"
@@ -141,10 +160,12 @@ export default function DonorReviewPage() {
         <button
           type="button"
           onClick={handleConfirm}
+          disabled={saving}
           className="h-(--control-height-lg) w-full rounded-(--radius-lg) bg-(--color-brand-primary) text-sm font-bold text-(--color-text-inverse) transition-colors hover:bg-(--color-brand-primary-hover)"
         >
-          Confirm and save
+          {saving ? "Saving profile…" : "Confirm and save"}
         </button>
+        {error ? <p role="alert" className="text-sm text-(--color-danger)">{error}</p> : null}
       </div>
     </OnboardingLayout>
   );

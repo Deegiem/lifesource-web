@@ -1,40 +1,48 @@
+import { create } from "zustand";
 
-import { create } from 'zustand';
-import { getCAEscalations, getCAEscalationsById } from '@/services/community-admin-escalations.service';
-import { CAEscalations } from '@/features/community-admin/escalations-types';
+export interface EscalationRow {
+  ref: string;
+  related: string;
+  type: string;
+  reason: string;
+  date: string;
+  status: "Draft" | "Pending Review" | "Approved" | "Rejected";
+}
 
-interface CAEscalationsState {
-  items: CAEscalations[];
-  selectedItem: CAEscalations | null;
+interface State {
+  items: EscalationRow[];
   isLoading: boolean;
   error: string | null;
   loadItems: () => Promise<void>;
-  loadItem: (id: string) => Promise<void>;
+  submit: (input: {
+    type: "donor-cap" | "cooldown";
+    relatedId: string;
+    reason: string;
+  }) => Promise<void>;
 }
 
-export const useCAEscalationsStore = create<CAEscalationsState>((set) => ({
+export const useCAEscalationsStore = create<State>((set) => ({
   items: [],
-  selectedItem: null,
   isLoading: false,
   error: null,
-  
+
   loadItems: async () => {
-    set({ isLoading: true, error: null });
-    try {
-      const items = await getCAEscalations();
-      set({ items, isLoading: false });
-    } catch {
-      set({ error: 'Failed to load', isLoading: false });
-    }
+    // No escalations endpoint in the supplied API yet.
+    // When it exists, fetch here.
+    set({ isLoading: false });
   },
-  
-  loadItem: async (id: string) => {
-    set({ isLoading: true, error: null });
-    try {
-      const item = await getCAEscalationsById(id);
-      set({ selectedItem: item, isLoading: false });
-    } catch {
-      set({ error: 'Failed to load', isLoading: false });
-    }
-  }
+
+  submit: async (input) => {
+    // Stub for now — no backend endpoint.
+    // When POST /community/escalations exists, call it here.
+    const newRow: EscalationRow = {
+      ref: `ESC-${Date.now().toString().slice(-6)}`,
+      related: input.relatedId,
+      type: input.type === "donor-cap" ? "More than 10 donors" : "Early cooldown reactivation",
+      reason: input.reason,
+      date: new Date().toLocaleDateString(),
+      status: "Pending Review",
+    };
+    set((state) => ({ items: [newRow, ...state.items] }));
+  },
 }));

@@ -4,12 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { AUTH_ROUTES } from "@/features/auth/constants";
+import { apiService } from "@/services/api.service";
+import { getApiErrorMessage } from "@/lib/axios";
 
 export default function SignupPage() {
   const router = useRouter();
   const [show, setShow] = useState(false);
   const [confirmShow, setConfirmShow] = useState(false);
   const [agreed, setAgreed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -21,7 +25,7 @@ export default function SignupPage() {
   const update = (key: keyof typeof form, value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
   const valid =
-    !!form.fullName &&
+    form.fullName.trim().split(/\s+/).filter(Boolean).length >= 2 &&
     !!form.email &&
     !!form.phone &&
     form.password.length >= 8 &&
@@ -56,7 +60,22 @@ export default function SignupPage() {
               className="mt-7 md:mt-8"
               onSubmit={(e) => {
                 e.preventDefault();
-                if (valid) router.push(AUTH_ROUTES.VERIFY);
+                if (!valid || submitting) return;
+                const [first_name, ...lastNameParts] = form.fullName.trim().split(/\s+/);
+                setSubmitting(true);
+                setError("");
+                void apiService.signup({
+                  first_name,
+                  last_name: lastNameParts.join(" "),
+                  email: form.email.trim(),
+                  phone: form.phone.trim(),
+                  password: form.password,
+                }).then((result) => {
+                  sessionStorage.setItem("lifesource.signup.email", result.masked_email);
+                  router.push(AUTH_ROUTES.VERIFY);
+                }).catch((requestError: unknown) => {
+                  setError(getApiErrorMessage(requestError, "Unable to create your account."));
+                }).finally(() => setSubmitting(false));
               }}
             >
               {/* Two columns on desktop, single column on mobile */}
@@ -141,12 +160,13 @@ export default function SignupPage() {
                   </span>
                 </label>
 
+                {error ? <p role="alert" className="mt-4 text-sm text-(--color-danger)">{error}</p> : null}
                 <button
                   type="submit"
-                  disabled={!valid}
+                  disabled={!valid || submitting}
                   className="mt-4 h-(--control-height-lg) w-full rounded-(--radius-2xl) bg-(--color-brand-primary) text-sm font-semibold text-(--color-text-inverse) hover:bg-(--color-brand-primary-hover) disabled:cursor-not-allowed disabled:opacity-50 md:mt-5 md:text-base"
                 >
-                  Create account
+                  {submitting ? "Creating account…" : "Create account"}
                 </button>
               </div>
             </form>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
@@ -12,14 +13,7 @@ import {
 } from "lucide-react";
 
 import { AUTH_ROUTES } from "@/features/auth/constants";
-import Link from "next/link";
 
-/**
- * Stock photography (placeholders — swap for your own donor/community shots
- * before shipping to production):
- *  - Hero / CTA background: photo by LuAnn Hunt on Unsplash, Unsplash License
- *  - "Why us" panel:        photo by CDC on Unsplash, Unsplash License
- */
 const IMG_DONATION =
   "https://images.unsplash.com/photo-1536856136534-bb679c52a9aa?auto=format&fit=crop&w=1800&q=80";
 const IMG_CARE =
@@ -36,7 +30,6 @@ function BloodDropIcon({ className = "" }: { className?: string }) {
   );
 }
 
-/** A single ECG-style pulse line — the page's recurring visual thread. */
 function PulseLine({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 600 80" className={className} fill="none" aria-hidden="true">
@@ -122,14 +115,14 @@ export default function LandingPage() {
       {/* ============ NAVBAR ============ */}
       <header className="sticky top-0 z-40 w-full border-b border-(--color-border-subtle) bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
-          <div className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5">
             <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-(--color-brand-primary) to-(--color-blood-red) shadow-sm shadow-(--color-blood)/30">
               <BloodDropIcon className="size-5 text-white" />
             </div>
             <span className="font-(--font-heading) text-lg font-extrabold tracking-tight text-(--color-brand-primary)">
               LIFESOURCE
             </span>
-          </div>
+          </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
             <a href="#how" className="text-sm font-medium text-(--color-text-secondary) hover:text-(--color-text-primary)">
@@ -140,9 +133,6 @@ export default function LandingPage() {
             </a>
             <a href="#why" className="text-sm font-medium text-(--color-text-secondary) hover:text-(--color-text-primary)">
               Why us
-            </a>
-            <a href="/login" className="text-sm font-medium text-(--color-text-secondary) hover:text-(--color-text-primary)">
-              Log in
             </a>
           </nav>
 
@@ -167,12 +157,10 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-(--color-brand-primary) via-(--color-brand-primary)/92 to-(--color-blood)/70" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
 
-        {/* soft glow blobs, red family only */}
         <div className="pointer-events-none absolute -top-24 right-0 size-[420px] rounded-full bg-(--color-blood-red)/40 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-32 left-1/3 size-[380px] rounded-full bg-(--color-blood)/30 blur-3xl" />
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:py-28">
-          {/* Left — copy */}
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-sm text-white/90 backdrop-blur-sm ring-1 ring-white/20">
               <span className="relative flex size-2">
@@ -219,7 +207,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Right — live-signal card */}
           <div className="relative rounded-3xl bg-white/10 p-6 backdrop-blur-md ring-1 ring-white/20 sm:p-8">
             <p className="text-xs font-semibold uppercase tracking-wide text-white/60">
               Live signal · Ikeja community
@@ -320,7 +307,6 @@ export default function LandingPage() {
         </div>
 
         <div className="relative mt-14">
-          {/* connecting thread — this really is a sequence, so the line + numbers earn their keep */}
           <div className="pointer-events-none absolute left-0 right-0 top-7 hidden h-px bg-gradient-to-r from-(--color-brand-primary)/0 via-(--color-blood) to-(--color-blood-red)/0 md:block" />
 
           <div className="grid gap-6 md:grid-cols-3">
@@ -358,7 +344,6 @@ export default function LandingPage() {
         <div className="pointer-events-none absolute -right-24 bottom-0 size-96 rounded-full bg-(--color-blood-soft) blur-3xl" />
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 sm:px-8 lg:grid-cols-2 lg:gap-20 lg:py-28">
-          {/* Left — content */}
           <div>
             <h2 className="font-(--font-heading) text-3xl font-extrabold leading-tight text-(--color-text-primary) sm:text-4xl lg:text-5xl">
               Built on community trust, not cold algorithms
@@ -393,7 +378,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Right — photo with a floating request card */}
           <div className="relative mx-auto max-w-md">
             <div className="relative overflow-hidden rounded-3xl shadow-xl">
               <img
@@ -478,47 +462,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ============ ACCESS PORTALS ============ */}
-      <section className="mx-auto max-w-7xl px-5 pb-20 sm:px-8">
-        <div className="flex flex-col divide-y divide-(--color-border-subtle) rounded-3xl border border-(--color-border-subtle) sm:flex-row sm:divide-x sm:divide-y-0">
-          <Link
-            href="/community-admin/verify"
-            className="group flex flex-1 items-center gap-4 p-6 transition-colors hover:bg-(--color-surface-page)"
-          >
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--color-brand-primary-soft) text-(--color-brand-primary)">
-              <Users size={20} />
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold text-(--color-text-primary)">Community admin</p>
-              <p className="text-sm text-(--color-text-secondary)">
-                Manage donors, requests, and members in your community.
-              </p>
-            </div>
-            <span className="hidden text-sm font-semibold text-(--color-brand-primary) group-hover:underline sm:inline">
-              Sign in
-            </span>
-          </Link>
-
-          <Link
-            href="/super-admin/login"
-            className="group flex flex-1 items-center gap-4 p-6 transition-colors hover:bg-(--color-surface-page)"
-          >
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--color-brand-secondary-soft) text-(--color-blood)">
-              <ShieldCheck size={20} />
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold text-(--color-text-primary)">Super admin</p>
-              <p className="text-sm text-(--color-text-secondary)">
-                Oversee communities, hospitals, and platform operations.
-              </p>
-            </div>
-            <span className="hidden text-sm font-semibold text-(--color-brand-primary) group-hover:underline sm:inline">
-              Sign in
-            </span>
-          </Link>
-        </div>
-      </section>
-
       {/* ============ FOOTER ============ */}
       <footer className="border-t border-(--color-border-subtle) bg-white">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-5 py-10 sm:px-8 md:flex-row">
@@ -530,27 +473,6 @@ export default function LandingPage() {
               LIFESOURCE
             </span>
           </div>
-          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs">
-            <Link
-              href="/super-admin/login"
-              className="font-semibold text-(--color-text-secondary) hover:text-(--color-brand-primary)"
-            >
-              Super admin
-            </Link>
-            <Link
-              href="/community-admin/verify"
-              className="font-semibold text-(--color-text-secondary) hover:text-(--color-brand-primary)"
-            >
-              Community admin
-            </Link>
-            <button
-              type="button"
-              onClick={goToAuth}
-              className="font-semibold text-(--color-brand-primary) hover:underline"
-            >
-              Donor sign in
-            </button>
-          </nav>
 
           <p className="text-xs text-(--color-text-muted)">
             © {new Date().getFullYear()} LIFESOURCE. Built for Nigeria.

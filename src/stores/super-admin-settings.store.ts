@@ -25,8 +25,8 @@ export const useSuperAdminSettingsStore = create<State>((set) => ({
     try {
       const settings = await getPlatformSettings();
       set({ settings, isLoading: false });
-    } catch {
-      set({ isLoading: false, error: "Unable to load settings." });
+    } catch (error) {
+      set({ isLoading: false, error: error instanceof Error ? error.message : "Unable to load settings." });
     }
   },
 
@@ -35,8 +35,8 @@ export const useSuperAdminSettingsStore = create<State>((set) => ({
     try {
       const saved = await updatePlatformSettings(settings);
       set({ settings: saved, isSaving: false });
-    } catch {
-      set({ isSaving: false, error: "Unable to save settings." });
+    } catch (error) {
+      set({ isSaving: false, error: error instanceof Error ? error.message : "Unable to save settings." });
     }
   },
 }));

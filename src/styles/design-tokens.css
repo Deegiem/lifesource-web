@@ -16,6 +16,22 @@
     --color-blood-hover: #a61f1f;
     --color-blood-soft: #fef2f2;
 
+    /* ── Community Admin aliases (transitional) ── */
+    /* These map old `ca-*` Tailwind utilities to the shared super-admin palette.
+   Remove once all community-admin components use `--color-admin-*` directly. */
+    --color-ca-page: var(--color-admin-page);
+    --color-ca-side: var(--color-admin-sidebar);
+    --color-ca-card: var(--color-admin-card);
+    --color-ca-border: var(--color-admin-border);
+    --color-ca-accent: var(--color-admin-accent);
+    --color-ca-active: var(--color-admin-accent-soft);
+    --color-ca-text: var(--color-admin-text);
+    --color-ca-muted: var(--color-admin-muted);
+    --color-ca-dim: var(--color-admin-dim);
+    --color-ca-red: var(--color-blood);
+    --color-ca-red-bg: var(--color-admin-danger-soft);
+    --color-ca-bg: var(--color-admin-page);
+
     /*     Text colours */
 
     --color-text-primary: #0d1b2a;
